@@ -1,0 +1,14 @@
+{
+  "name": "client-final",
+  "version": "1.0.0",
+  "description": "real",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "create-react-app": "^5.0.1"
+  }
+}
