@@ -100,22 +100,21 @@ class Login extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            
+            showSignUpFlag: false
         }
     }
 
     render () {
         return (
-        <div className="main"> 
-            <h1></h1>
-            <div className= "central-content">
-            <div className="sign-in-div">
-                <AccountSignInForm />
-            </div>
-            <div className='sign-up-div'>
+        <div className='main'>
+            <img src='https://hoopdirt.com/wp-content/uploads/2017/05/VT_logo.svg_.png' />
+            {
+                this.state.showSignUpFlag
+                ?
                 <AccountCreationForm />
-            </div>
-            </div>
+                :
+                <AccountSignInForm />
+            }
         </div>)
     }
 }
