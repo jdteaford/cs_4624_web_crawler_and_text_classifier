@@ -1,0 +1,58 @@
+/* login.css */
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .central-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sign-in-div,
+  .sign-up-div {
+    width: 100%;
+    max-width: 400px; /* or any other appropriate value */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 10px;
+  }
+  
+  .sign-in-div form,
+  .sign-up-div form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .sign-in-div label,
+  .sign-up-div label {
+    margin-bottom: 10px;
+  }
+  
+  .sign-in-div input,
+  .sign-up-div input,
+  .sign-in-div button,
+  .sign-up-div button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .sign-in-div button,
+  .sign-up-div button {
+    background-color: #007bff;
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .sign-in-div button:hover,
+  .sign-up-div button:hover {
+    background-color: #0056b3;
+  }
