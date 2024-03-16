@@ -11,21 +11,25 @@ function AccountSignInForm() {
             <br />
             <label>
                 Username: 
-                <input 
-                    type='text'
-                    onChange={(e) => setUsername(e.target.value)}>
-                </input>
             </label>
+            <input 
+                type='text'
+                onChange={(e) => setUsername(e.target.value)}>
+            </input>
             <br />
             <label>
                 Password: 
-                <input 
-                    type='text'
-                    onChange={(e) => setPassword(e.target.value)}>
-                </input>
             </label>
+            <input 
+                type='text'
+                onChange={(e) => setPassword(e.target.value)}>
+            </input>
             <br />
-            <button type="submit">Sign In</button>
+            <div>
+                <button type="submit">
+                    Sign In
+                </button>
+            </div>
         </form>
     )
 }
@@ -65,32 +69,36 @@ function AccountCreationForm() {
         <form onSubmit={handleSubmit}>
             <label>
                 Username: 
-                <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                />
             </label>
+            <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+            />
             <br />
             <label>
                 Password: 
-                <input
+            </label>
+            <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                />
-            </label>
+            />
             <br />
             <label>
                 Email: 
-                <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
             </label>
+            <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
             <br />
-            <button type="submit">Create Account</button>
+            <div>
+                <button type="submit">Create Account</button>
+            </div>
+            <br />
+            <br />
         </form>
     );
 }
@@ -105,15 +113,30 @@ class Login extends React.Component {
     }
 
     render () {
+
         return (
         <div className='main'>
             <img src='https://hoopdirt.com/wp-content/uploads/2017/05/VT_logo.svg_.png' />
+            <br />
             {
                 this.state.showSignUpFlag
                 ?
-                <AccountCreationForm />
+                <>
+                    <AccountCreationForm />
+                    <br />
+                    <button onClick={() => this.setState({ showSignUpFlag: false})}>
+                        Go Back
+                    </button>
+                </>
                 :
-                <AccountSignInForm />
+                <>
+                    <AccountSignInForm />
+                    <br />
+                    <button onClick={() => this.setState({ showSignUpFlag: true})}>
+                        Go to Sign Up
+                    </button>
+                </>
+                
             }
         </div>)
     }
