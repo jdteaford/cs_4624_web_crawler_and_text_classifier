@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Banner from '../components/Banner';
+
 import "../stylesheets/login.css"
 
 function AccountSignInForm() {
@@ -6,14 +8,39 @@ function AccountSignInForm() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        try {
+            const response = await fetch('http://localhost:5000/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                alert(data.message);
+            } else {
+                alert('Failed to sign in: maybe check for incorrect credentials?');
+            }
+        } catch (error) {
+            console.error('Error during login:', error);
+            alert('Error creating account');
+        }
+    };
+
     return (
-        <form>
+        <form onSubmit={handleSubmit}>
             <br />
             <label>
                 Username: 
             </label>
             <input 
                 type='text'
+                value={username}
                 onChange={(e) => setUsername(e.target.value)}>
             </input>
             <br />
@@ -22,6 +49,7 @@ function AccountSignInForm() {
             </label>
             <input 
                 type='text'
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}>
             </input>
             <br />
@@ -115,8 +143,10 @@ class Login extends React.Component {
     render () {
 
         return (
+        <div>
         <div className='main'>
-            <img src='https://hoopdirt.com/wp-content/uploads/2017/05/VT_logo.svg_.png' />
+            <Banner />
+            <img src='https://hoopdirt.com/wp-content/uploads/2017/05/VT_logo.svg_.png' alt='' />
             <br />
             {
                 this.state.showSignUpFlag
@@ -138,6 +168,7 @@ class Login extends React.Component {
                 </>
                 
             }
+            </div>
         </div>)
     }
 }

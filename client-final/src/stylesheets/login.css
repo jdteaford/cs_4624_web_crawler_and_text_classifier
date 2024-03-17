@@ -7,7 +7,7 @@
     justify-content: center;
     align-items: center; /* Added to center horizontally */
     font-family: "Comic Sans MS";
-    color: lightgray;
+    color: white
 }
 
 button {
@@ -30,6 +30,7 @@ input {
     align-self: center;
     align-content: center;
     justify-self: center;
+    background-color: lightgrey;
 }
 
 form {
@@ -40,4 +41,9 @@ form {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+button {
+    font-family: "Comic Sans MS";
+    outline: gray;
 }
