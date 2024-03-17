@@ -52,6 +52,7 @@ def register():
         return jsonify({"error": "Username already exists"}), 409
     
     db.users.insert_one({"username": username, "password": hash, "email": email})
+    # db.users.insert_one({"username": username, "password": password, "email": email})
 
     return jsonify({"message": "User created successfully"}), 201
 
@@ -62,7 +63,9 @@ def login():
     username = user_info['username']
     password = user_info['password']
 
-    user = db.find.find_one({"username": username})
+
+    user = db.users.find_one({"username": username})
+    print(user)
 
     if user and check_password_hash(user['password'], password):
         return jsonify({"message": "Login successful"}), 200
