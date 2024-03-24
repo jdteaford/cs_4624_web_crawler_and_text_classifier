@@ -11,7 +11,6 @@ function AccountSignInForm() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
-    // const { login } = useAuth();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -31,8 +30,7 @@ function AccountSignInForm() {
 
             const { access_token } = await response.json();
             localStorage.setItem('token', access_token); // Store the token in local storage
-            // navigate('/');
-            this.props.history.push('/');
+            navigate('/');
         } catch (error) {
             console.error('Error during login:', error);
             alert('Error creating account');
@@ -73,7 +71,7 @@ function AccountCreationForm() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
-    // const { login } = useAuth();
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -93,8 +91,7 @@ function AccountCreationForm() {
 
             const { access_token } = await response.json();
             localStorage.setItem('token', access_token); // Store the token in local storage
-            // navigate('/');
-            this.props.history.push('/');
+            navigate('/');
         } catch (error) {
             console.error('Error during account creation:', error);
             alert('Error creating account');
