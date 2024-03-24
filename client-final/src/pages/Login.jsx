@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import {useNavigate} from 'react-router-dom';
 import Banner from '../components/Banner';
+import Home from './Home';
 
 import "../stylesheets/login.css"
 
 function AccountSignInForm() {
+    const nav = useNavigate();
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -23,6 +26,8 @@ function AccountSignInForm() {
             if (response.ok) {
                 const data = await response.json();
                 alert(data.message);
+                // Redirect to another page
+                nav.push(`/home/${username}`);
             } else {
                 alert('Failed to sign in: maybe check for incorrect credentials?');
             }
