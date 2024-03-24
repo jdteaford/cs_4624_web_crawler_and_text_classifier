@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import Banner from '../components/Banner';
+// import { useAuth } from '../auth'
+import { useNavigate } from 'react-router-dom';
 
 import "../stylesheets/login.css"
+
 
 function AccountSignInForm() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
+    // const { login } = useAuth();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -20,12 +25,14 @@ function AccountSignInForm() {
                 body: JSON.stringify({ username, password }),
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                alert(data.message);
-            } else {
-                alert('Failed to sign in: maybe check for incorrect credentials?');
+            if (!response.ok) {
+                throw new Error('Login failed');
             }
+
+            const { access_token } = await response.json();
+            localStorage.setItem('token', access_token); // Store the token in local storage
+            // navigate('/');
+            this.props.history.push('/');
         } catch (error) {
             console.error('Error during login:', error);
             alert('Error creating account');
@@ -66,6 +73,7 @@ function AccountCreationForm() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
+    // const { login } = useAuth();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -79,14 +87,14 @@ function AccountCreationForm() {
                 body: JSON.stringify({ username, password, email }),
             });
 
-            if (response.ok) {
-                const data = await response.json();
-                alert(data.message); // Success message
-                // Additional actions on success (e.g., redirect)
-            } else {
-                alert('Failed to create account');
-                // Handle errors or unsuccessful responses
+            if (!response.ok) {
+                throw new Error('Account Creation failed');
             }
+
+            const { access_token } = await response.json();
+            localStorage.setItem('token', access_token); // Store the token in local storage
+            // navigate('/');
+            this.props.history.push('/');
         } catch (error) {
             console.error('Error during account creation:', error);
             alert('Error creating account');
