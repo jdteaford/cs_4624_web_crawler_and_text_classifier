@@ -1,4 +1,6 @@
-import React from 'react';
+import React,{useState, useEffect} from 'react';
+import {jwtDecode} from 'jwt-decode';
+
 
 const styles = {
     banner: {
@@ -7,8 +9,10 @@ const styles = {
         alignItems: 'center',
         backgroundColor: '#2b2b2b',
         width: '100vw',
-        height: '10vh',
-        position: 'relative',
+        height: '20vh',
+        position: 'fixed', //
+        top:0, //
+        zIndex: 1000 //
     },
     h1: {
         position: 'absolute',
@@ -39,14 +43,35 @@ const styles = {
     }
 };
 
-function Banner({expo, user}) {
+function Banner({expo}) {
+    const [user, setUser] = useState('');
+
+    //assuming i have jwt token in local storage
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+
+        if(token) {
+        const decodedToken = jwtDecode(token);
+        console.log(decodedToken);
+        setUser(decodedToken.sub);
+        }
+    }, []);
+
     return (
         <div style={styles.banner}>
-            <div>
-                <h1 style={styles.h1}>Welcome, {user}</h1>
-                <h2 style={styles.h2}>Automated Crisis Events Collection Interface</h2>
-                <p className="banner__expo">{expo}</p>
-            </div>
+            {user ? (
+                <div>
+                    <h1 style={styles.h1}>Welcome, {user}</h1>
+                    <h2 style={styles.h2}>Automated Crisis Events Collection Interface</h2>
+                    <p className="banner__expo">{expo}</p>
+                </div>
+            ): (
+                <div>
+                    <h1 style={styles.h1}>Welcome </h1>
+                    <h2 style={styles.h2}>Automated Crisis Events Collection Interface</h2>
+                    <p className="banner__expo">{expo}</p>
+                </div>
+            )}
         </div>
     );
 }

@@ -16,7 +16,7 @@ class NewCrawl extends React.Component {
         <div>
         <div className='main'>
             <Banner />
-            <img src='https://hoopdirt.com/wp-content/uploads/2017/05/VT_logo.svg_.png' alt='' />
+            <p>new crawl page babyy</p>
             </div>
         </div>)
     }

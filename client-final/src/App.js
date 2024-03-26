@@ -8,6 +8,7 @@ import PrivateRoute from './components/PrivateRoute';
 import LandingPage from './pages/Landing';
 import LoginPage from './pages/Login';
 import NewCrawl from './pages/NewCrawl';
+import CrawlHistory from './pages/CrawlHistory';
 
 // function ProtectedRoute({ children }) {
 //   const { isLoggedIn } = useAuth();
@@ -51,7 +52,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<PrivateRoute><LandingPage /></PrivateRoute>} />
         <Route path="*" element={<Navigate replace to="/" />} />
-        <Route path="/crawl" element={<NewCrawl />}/>
+        <Route path="/newcrawl" element={<NewCrawl />}/>
+        <Route path="/crawlhistory" element={<CrawlHistory />}/>
       </Routes>
     </Router>
   );

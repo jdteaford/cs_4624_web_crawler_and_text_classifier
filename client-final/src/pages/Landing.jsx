@@ -27,10 +27,10 @@ function LandingPage() {
         <div>
           <h1>hello {user}</h1>
           <LogoutButton />
-          <Link to="/crawl">
+          <Link to="/newcrawl">
             <button type="new crawl">Create New Crawl</button>
           </Link>
-          <Link>
+          <Link to="/crawlhistory">
             <button type = "crawl history">View Crawl History</button>
           </Link>
         </div>
