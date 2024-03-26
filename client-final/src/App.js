@@ -7,6 +7,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import PrivateRoute from './components/PrivateRoute';
 import LandingPage from './pages/Landing';
 import LoginPage from './pages/Login';
+import NewCrawl from './pages/NewCrawl';
 
 // function ProtectedRoute({ children }) {
 //   const { isLoggedIn } = useAuth();
@@ -50,6 +51,7 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<PrivateRoute><LandingPage /></PrivateRoute>} />
         <Route path="*" element={<Navigate replace to="/" />} />
+        <Route path="/crawl" element={<NewCrawl />}/>
       </Routes>
     </Router>
   );

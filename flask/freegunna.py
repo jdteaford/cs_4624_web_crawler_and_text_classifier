@@ -61,8 +61,18 @@ def verify():
     return jsonify(logged_in_as=user), 200
 
 
-@app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST', 'OPTIONS'])
 def register():
+    print('here')
+    #handle preflight request first
+    if request.method == 'OPTIONS':
+        print('hit')
+        # Respond to preflight request
+        response = app.make_default_options_response()
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+        response.headers['Access-Control-Allow-Methods'] = 'POST'
+        return response
+
     user_info = request.json
     username = user_info['username']
     password = user_info['password']
