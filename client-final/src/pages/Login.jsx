@@ -27,7 +27,7 @@ function AccountSignInForm() {
                 const data = await response.json();
                 alert(data.message);
                 // Redirect to another page
-                nav.push(`/home/${username}`);
+                //nav.push(`/home/${username}`);
             } else {
                 alert('Failed to sign in: maybe check for incorrect credentials?');
             }
