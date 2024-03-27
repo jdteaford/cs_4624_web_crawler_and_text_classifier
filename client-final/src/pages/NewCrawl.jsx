@@ -7,7 +7,7 @@ import 'rc-slider/assets/index.css'; // Import the default CSS styles
 import {jwtDecode} from 'jwt-decode';
 //import Banner from '../components/Banner';
 
-//import uniqid from 'uniqid';
+import uniqid from 'uniqid';
 
 
 const NewCrawl = () => {
@@ -95,7 +95,7 @@ const NewCrawl = () => {
             formData.append('username', userName);
             formData.append('crawlname', crawlName);
 
-            //formData.append('crawl_id', uniqid());
+            formData.append('crawl_id', uniqid());
 
             const response = await fetch(apiUrl, {
                 method: 'POST',
