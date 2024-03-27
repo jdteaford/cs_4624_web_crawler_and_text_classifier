@@ -200,7 +200,7 @@ const NewCrawl = ({user}) => {
     <>
       <div className={`modal__container ${modalClass}`}>
         {/* <Banner /> */}
-        <button className="close__button" onClick={toggleModal}>Continue</button>
+        <button className="close__button" onClick={toggleModal}>X</button>
         <h1 className="modal__header">Change Crawl Constraints</h1>
         <h3 className="modal__instructions">Edit the Parameters for the Crawl, maxes are 5000 URLs, 10 pages, and 1.0 for Tresholds. They will reset to their defaults in error.</h3>
             <div className="constraint__wrapper">
