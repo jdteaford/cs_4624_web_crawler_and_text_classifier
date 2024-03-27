@@ -36,3 +36,183 @@
     transform: rotate(360deg);
   }
 }
+
+
+html, body{
+  background-color: rgb(127, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  overflow-x: hidden;
+  height: 100%;
+  margin: 0;
+  font-family: "Comic Sans MS";
+}
+.hide{
+  visibility: hidden;
+}
+/*
+crawler css
+*/
+p{
+  margin: 20px;
+}
+.crawl__initializer--wrapper{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 100px;
+}
+.crawl__initializer--instructions{
+  color: white;
+  font-size: 25px;
+  margin-bottom: 25px;
+}
+.input__wrapper{
+  border-style: solid;
+  cursor: pointer;
+  width: 739px;
+  background-color: #FF7F50;
+  transition: all 350ms ease;
+}
+.dropzone{
+  border-bottom-style: solid;
+  margin-bottom: 5px;
+  background-color: #FF7F50;
+  display: flex; /* Use flexbox to center text vertically and horizontally */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  height: 200px;
+}
+.file__holder{
+  border: 1px;
+}
+.run__crawl, .remove__file{
+  width: 241.7px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.237);
+  border: none;
+  border-style: solid;
+  border-width: 3px;
+  margin-top: 4px;
+  text-decoration: none;
+  font-size: 15px;
+  margin: 5px;
+  transition: all 350ms ease;
+}
+.run__crawl:hover, .remove__file:hover{
+  background: #6d9dca6e;
+  cursor: pointer;
+  transform: scale(1.025);
+}
+.run__crawl:hover .run__crawl, .remove__file:hover .remove__file{
+  color: white;
+}
+
+/*
+
+MODAL CSS
+
+*/
+
+.modal__container{
+  position: absolute;
+  background-color: #FF7F50;
+  width: 1000px;
+  height: 500px;
+  border-radius: 7px;
+  top: 40%;
+  transition: all 350ms ease;
+  box-shadow: 0 20px 80px 0 rgb(0,0,0,0.45);
+  z-index: 100;
+}
+.close__button{
+  position: absolute;
+  left: 25px;
+  bottom: 15px;
+  z-index: 100;
+  border: none;
+  background: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-top-right-radius: 15px;
+  margin-top: 1px;
+  margin-right: 5px;
+  transition: all 350ms ease;
+}
+.modal__header{
+  margin-left: 2rem;
+}
+.modal__instructions{
+  margin-left: 2rem;
+  margin-right: 2rem;
+  margin-bottom: -1rem;
+  font-weight: normal;
+  font-style: italic;
+}
+.constraint__wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 50%;
+  margin-top: 50px;
+}
+.user__hardcount--container{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  position: relative;
+}
+.hardcount__label{
+  font-size: 1.15rem;
+  position: absolute;
+  left: 100px;
+}
+.fa-asterisk{
+  color: rgb(169, 28, 28);
+  margin-right: 10px;
+}
+.url__hardcount--input{
+  height: 20px;
+  position: absolute;
+  right: 120px;
+}
+.hidden{
+  opacity: 0;
+  z-index: -100;
+}
+.show{
+  opacity: 1;
+  z-index: 100;
+}
+
+/*
+Spinner stuff
+*/
+.spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top: 4px solid #FF7F50;
+  animation: spin 1s linear infinite;
+  margin-top: 50px;
+}
+.spinner--wrapper{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 50px;
+}
+.spinner__text{
+  margin-top: 55px;
+  margin-left: 20px;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
