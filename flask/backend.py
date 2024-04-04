@@ -345,11 +345,11 @@ def run_to_db(user_id, crawl_name, crawl_id):
         "Stats": json.dumps(crawlStatSucc), 
         "Tree": temp
     }
-    print("HELLO")
+    stringVar = "hello"
+    print(stringVar)
     print(data)
 
     db1.crawl_data.insert_one(data)
-    print("is this an error?")
 
 #endpoint that performs crawl
 @app.route('/scrape_and_save', methods = ["POST"])
