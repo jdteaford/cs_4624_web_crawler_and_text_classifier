@@ -52,8 +52,8 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<PrivateRoute><LandingPage /></PrivateRoute>} />
         <Route path="*" element={<Navigate replace to="/" />} />
-        <Route path="/newcrawl" element={<NewCrawl />}/>
-        <Route path="/crawlhistory" element={<CrawlHistory />}/>
+        <Route path="/newcrawl" element={<PrivateRoute><NewCrawl /></PrivateRoute>}/>
+        <Route path="/crawlhistory" element={<PrivateRoute><CrawlHistory /></PrivateRoute>}/>
       </Routes>
     </Router>
   );
