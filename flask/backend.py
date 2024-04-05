@@ -15,7 +15,7 @@ import datetime
 import heapq
 # import random
 import json
-# import os
+import os
 from urllib.parse import urlparse
 import re
 
@@ -229,7 +229,14 @@ hubs = 0
 
 def pop_scrape():
     global page_count, count, crawl_id
+    
+    #Create a local directory to save crawls
 
+    current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+    download_dir = f"{current_date}_webpage collection_{crawl_id}"
+    os.makedirs(download_dir, exist_ok=True)
+
+    #Pop the first URL
     url = pop_heap()
 
     #print(url.url)
@@ -271,6 +278,10 @@ def pop_scrape():
                         # blob = bucket.blob(file_path)
                         
                         # blob.upload_from_string(response.content)
+                        safe_filename = os.path.join(download_dir, file_name)
+                        with open(safe_filename, 'w', encoding='utf-8') as f:
+                            f.write(response.text)
+
                         print(f'Successfully uploaded {file_name}')
                     except Exception as e:
                         print(f'Error: {e}')
@@ -343,7 +354,7 @@ def run_to_db(user_id, crawl_name, crawl_id):
         "URLs": crawlJSONArray, 
         "Number of Hubs": hubs, 
         "Stats": json.dumps(crawlStatSucc), 
-        "Tree": temp
+        # "Tree": temp
     }
     stringVar = "hello"
     print(stringVar)
@@ -395,11 +406,10 @@ def scrape_and_save():
 
     print(f"starting length: {len(prio_heap)}")
     # Begin to intergrate through the heap
-    # while len(prio_heap) > 0 and page_count < userHardCount:
-    #     pop_scrape()
-        #print(f"HEAP COUNT: {len(prio_heap)}")
-        #print(count)
-        #print(USER_HARDCOUNT)
+    while len(prio_heap) > 0 and page_count < userHardCount:
+        pop_scrape()
+        print(f"HEAP COUNT: {len(prio_heap)}")
+        print(count)
     run_to_db(request.form['username'], request.form['crawlname'], request.form['crawl_id'])
 
     #for testing
