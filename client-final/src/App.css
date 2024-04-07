@@ -37,6 +37,18 @@
   }
 }
 
+@keyframes moveBackground {
+  0% {
+    background-size: 100% 100%;
+  }
+  50% {
+    background-size: 200% 200%;
+  }
+  100% {
+    background-size: 100% 100%;
+  }
+}
+
 
 html{
   background: radial-gradient(circle, #ff8d44, #cb9282, #833636, #660000);
@@ -84,6 +96,7 @@ html{
 form {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 input {
