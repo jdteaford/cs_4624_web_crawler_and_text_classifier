@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import Banner from '../components/Banner';
-// import { useAuth } from '../auth'
+// import Banner from '../components/Banner';
+import logo from '../crawl_logo.png';
 import { useNavigate } from 'react-router-dom';
 
-import "../stylesheets/login.css"
+
+// import "../stylesheets/login.css"
 
 
 function AccountSignInForm() {
@@ -149,9 +150,9 @@ class Login extends React.Component {
 
         return (
         <div>
-        <div className='main'>
-            <Banner />
-            <img src='https://hoopdirt.com/wp-content/uploads/2017/05/VT_logo.svg_.png' alt='' />
+        <div className="card">
+            <img src={logo} alt="logo" />
+            <h1>Integrated Web App for Crisis Events Crawling</h1>
             <br />
             {
                 this.state.showSignUpFlag
@@ -168,7 +169,7 @@ class Login extends React.Component {
                     <AccountSignInForm />
                     <br />
                     <button onClick={() => this.setState({ showSignUpFlag: true})}>
-                        Go to Sign Up
+                        Register
                     </button>
                 </>
                 

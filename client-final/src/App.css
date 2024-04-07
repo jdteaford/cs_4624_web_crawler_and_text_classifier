@@ -38,18 +38,78 @@
 }
 
 
-html, body{
-  background-color: rgb(127, 0, 0, 0.85);
+html{
+  background: radial-gradient(circle, #ff8d44, #cb9282, #833636, #660000);
   display: flex;
   justify-content: center;
+  align-items: center;
   overflow-x: hidden;
   height: 100%;
   margin: 0;
-  font-family: "Comic Sans MS";
+  font-family: Verdana, Geneva, sans-serif;
 }
 .hide{
   visibility: hidden;
 }
+
+.card {
+  position: relative;
+  background-color: #cb9282;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  width: 80vh;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+}
+
+.card img {
+  width: 20%; 
+  max-width: 100%;
+  height: auto; 
+  margin-right: 20px; 
+}
+
+.card h1 {
+  max-width: 80%;
+  text-align: center;
+  color: #222725;
+
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+input {
+  padding: 8px;
+  margin-bottom: 16px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #bf4342;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #ff8d44;
+} */
+
+.logout-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
 /*
 crawler css
 */

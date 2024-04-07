@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import LogoutButton from '../components/Logout';
 
-import "../stylesheets/landing.css"
+// import "../stylesheets/landing.css"
 
 import {jwtDecode} from 'jwt-decode';
 import { Link } from 'react-router-dom';
@@ -22,11 +22,12 @@ function LandingPage() {
   }, []);
 
   return (
-    <div className='landing'>
+    <div>
       {user ? (
-        <div>
-          <h1>hello {user}</h1>
+        <div className="card">
           <LogoutButton />
+          <h1>hello {user}</h1>
+          
           <Link to="/newcrawl">
             <button type="new crawl">Create New Crawl</button>
           </Link>
@@ -36,9 +37,8 @@ function LandingPage() {
         </div>
       ) : (
         <div>
-          <p>Please sign in</p>
           <LogoutButton />
-          
+          {/* I think this code is redundant bc we handle protected roots in app.js */}
         </div>
       )}
     </div>
