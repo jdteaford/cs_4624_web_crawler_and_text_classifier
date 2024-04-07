@@ -18,6 +18,23 @@ import json
 import os
 from urllib.parse import urlparse
 import re
+import numpy as np 
+import pickle
+import pandas as pd
+from gensim.models import KeyedVectors
+from gensim import utils
+import gensim.parsing.preprocessing as gsp
+from tqdm import tqdm
+from zipfile import ZipFile
+from sklearn import svm
+from sklearn.manifold import TSNE
+from sklearn.neural_network import MLPRegressor
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics import mean_squared_error
+import base64
+from requests_html import HTMLSession
+import requests
+from bs4 import BeautifulSoup
 
 
 app = Flask(__name__)
@@ -114,7 +131,7 @@ def login():
     
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-#///////////////////////////////////// the wall /////////////////////////////////////////////////////
+#///////////////////////////////////// the wall //////////////////////////////////////////////////////
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # Priority Queue --------------------------------------------------------------------------------------------------------------
@@ -362,6 +379,126 @@ def run_to_db(user_id, crawl_name, crawl_id):
 
     db1.crawl_data.insert_one(data)
 
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+#///////////////////////////////////// the wall //////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class DocSim:
+    def __init__(self, stopwords=None):
+        self.stopwords = stopwords if stopwords is not None else []
+
+    def vectorize(self, doc):
+        vectors = np.empty((doc.shape[0], 300))
+        # print("Shape is", doc.shape[0])
+        for idx, row in enumerate(doc['Text']):
+            words = [w for w in row.split(" ") if w not in self.stopwords]
+            word_vecs = []
+            for word in words:
+                try:
+                    vec = wv[word]
+                    word_vecs.append(vec)
+                except KeyError:
+                    pass
+            vectors[idx] = np.mean(word_vecs, axis=0)
+        return vectors
+
+    def _cosine_sim(self, vecA, vecB):
+        csim = np.dot(vecA, vecB) / (np.linalg.norm(vecA) * np.linalg.norm(vecB))
+        if np.isnan(np.sum(csim)):
+            return 0
+        return csim
+
+    def calculate_similarity(self, source_doc, target_docs=None, threshold=0):
+        if not target_docs:
+            return []
+
+        if isinstance(target_docs, str):
+            target_docs = [target_docs]
+
+        source_vec = self.vectorize(source_doc)
+        results = []
+        for doc in target_docs:
+
+            target_vec = self.vectorize(doc)
+            sim_score = self._cosine_sim(source_vec, target_vec)
+            if sim_score > threshold:
+                results.append({"score": sim_score, "doc": doc})
+            results.sort(key=lambda k: k["score"], reverse=True)
+
+        return results
+
+@app.route('/train', methods=['POST'])
+def train():
+    # Get model type
+    model_type = request.form.get('model_type')
+
+    # Get data type
+    data_type = request.form.get('data_type')
+
+    # Load data
+    data_file = request.files.get('data')
+    data_file.save('data')
+
+    return jsonify(train_model(model_type, data_type))
+
+def train_autoencoder(df):
+    df.to_csv("train_data.csv", index=False)
+    train_vectors = preprocess_data(df)
+
+    model = MLPRegressor(hidden_layer_sizes=(600, 50, 600))
+    model.fit(train_vectors, train_vectors)
+
+    s = pickle.dumps(model)
+    s = base64.b64encode(s).decode("ascii")
+
+    return (np.array(model.loss_curve_) * 100).tolist(), s
+
+def preprocess_data(df):
+    filters = [
+           gsp.strip_tags, 
+           gsp.strip_punctuation,
+           gsp.strip_multiple_whitespaces,
+           gsp.strip_numeric,
+           gsp.remove_stopwords, 
+           gsp.strip_short, 
+           gsp.stem_text
+          ]
+
+    df['Text'] = df['Text'].map(lambda x: clean_text(x, filters))
+
+    ds = DocSim()
+    return ds.vectorize(df)
+
+def train_model(model_type, data_type):
+    df = pd.DataFrame(columns=['Text'])
+    # print(model_type)
+    # print(data_type)
+    # print(df)
+    with ZipFile('data') as zipfile:  # Assuming 'data.zip' is your zip file
+        for filename in tqdm(zipfile.infolist()):
+            with zipfile.open(filename) as file:
+                # print("Processing file:", filename)  # Add this line to print the current file being processed
+                if re.match('url_.*.txt', file.name) is not None:
+                    f = pd.DataFrame([file.read()], columns=['Text'])
+                    # print("Created DataFrame from text:", f)  # Print the DataFrame created from the text
+                    df = pd.concat([df, f])
+                    # print("DataFrame after concatenation:", df)  # Print the DataFrame after concatenating with the new DataFrame
+    # print(df)
+
+    if model_type == "ae":
+        return train_autoencoder(df)
+
+def clean_text(s, filters):
+    s = s.lower()
+    s = utils.to_unicode(s)
+    for f in filters:
+        s = f(s)
+    return s
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+#///////////////////////////////////// the wall 3 //////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #endpoint that performs crawl
 @app.route('/scrape_and_save', methods = ["POST"])
 def scrape_and_save():
@@ -452,6 +589,7 @@ def get_avgs_of_succ():
         else:
             # Handle the case where there are no scores (to avoid division by zero)
             stats['avg_score'] = 0.0   
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
