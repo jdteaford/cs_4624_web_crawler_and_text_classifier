@@ -1,0 +1,14 @@
+.loss_curve {
+    width: fit-content;
+    max-width: 90%;
+    height: fit-content;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3vh 3vw;
+    background-color: #E7E6E6;
+    border-radius: 25px;
+    box-shadow: 9px 9px #E7E6E675;
+    flex-direction: column;
+  }
+  

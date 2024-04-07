@@ -34,6 +34,9 @@ function LandingPage() {
           <Link to="/crawlhistory">
             <button type = "crawl history">View Crawl History</button>
           </Link>
+          <Link to="/train">
+            <button type = "train model">Train Model</button>
+          </Link>
         </div>
       ) : (
         <div>

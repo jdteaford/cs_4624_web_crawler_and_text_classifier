@@ -9,6 +9,7 @@ import LandingPage from './pages/Landing';
 import LoginPage from './pages/Login';
 import NewCrawl from './pages/NewCrawl';
 import CrawlHistory from './pages/CrawlHistory';
+import Train from './pages/Train';
 
 // function ProtectedRoute({ children }) {
 //   const { isLoggedIn } = useAuth();
@@ -20,7 +21,7 @@ const useStyles = createUseStyles({
     animation: '$moveBackground 10s infinite',
     background: 'linear-gradient(to bottom right, #ff8d44, #833636, #660000)',
     height: '100vh',
-    width: '100vw', 
+    width: '100vw',
     position: 'absolute',
     top: 0,
     left: 0,
@@ -72,22 +73,23 @@ function App() {
   //     });
   //   }
   // }, []);
-  
+
   return (
     <div className='seperate'>
       <div className={classes.movingBackground}></div>
-    <div className='router'>
-    <Router>
-      <Routes>
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/" element={<PrivateRoute><LandingPage /></PrivateRoute>} />
-        <Route path="*" element={<Navigate replace to="/" />} />
-        <Route path="/newcrawl" element={<PrivateRoute><NewCrawl /></PrivateRoute>}/>
-        <Route path="/crawlhistory" element={<PrivateRoute><CrawlHistory /></PrivateRoute>}/>
-      </Routes>
-    </Router>
-    </div>
-    
+      <div className='router'>
+        <Router>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<PrivateRoute><LandingPage /></PrivateRoute>} />
+            <Route path="*" element={<Navigate replace to="/" />} />
+            <Route path="/newcrawl" element={<PrivateRoute><NewCrawl /></PrivateRoute>} />
+            <Route path="/crawlhistory" element={<PrivateRoute><CrawlHistory /></PrivateRoute>} />
+            <Route path="/train" element={<PrivateRoute><Train /></PrivateRoute>} />
+          </Routes>
+        </Router>
+      </div>
+
     </div>
   );
 }
