@@ -1,10 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import LogoutButton from '../components/Logout';
-
-// import "../stylesheets/landing.css"
-
+import logo from '../trans_web.png';
 import {jwtDecode} from 'jwt-decode';
 import { Link } from 'react-router-dom';
+import Banner from '../components/Banner';
 
 function LandingPage() {
 
@@ -23,7 +22,7 @@ function LandingPage() {
 
   return (
     <div>
-      {user ? (
+        <Banner imageUrl={logo}>Integrated Web App for Crisis Events Crawling</Banner>
         <div className="card">
           <LogoutButton />
           <h1>hello {user}</h1>
@@ -38,12 +37,6 @@ function LandingPage() {
             <button type = "train model">Train Model</button>
           </Link>
         </div>
-      ) : (
-        <div>
-          <LogoutButton />
-          {/* I think this code is redundant bc we handle protected roots in app.js */}
-        </div>
-      )}
     </div>
     
   );
