@@ -24,7 +24,7 @@ const Train = () => {
   }, []);
 
   const train = async () => {
-    const path = 'http://localhost:8000/train';
+    const path = 'http://localhost:5000/train';
     let formData = new FormData();
     formData.append("data", trainData[0]);
     formData.append("data_type", trainDataType);

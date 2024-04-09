@@ -36,6 +36,15 @@ from requests_html import HTMLSession
 import requests
 from bs4 import BeautifulSoup
 
+from gensim.test.utils import lee_corpus_list
+from gensim.models import Word2Vec
+
+model = Word2Vec(lee_corpus_list, vector_size=300, epochs=100)
+word_vectors = model.wv
+
+word_vectors.save('vectors.kv')
+wv = KeyedVectors.load('vectors.kv')
+
 
 app = Flask(__name__)
 #CORS(app)
@@ -429,6 +438,7 @@ class DocSim:
 
 @app.route('/train', methods=['POST'])
 def train():
+
     # Get model type
     model_type = request.form.get('model_type')
 
