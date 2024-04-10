@@ -76,6 +76,51 @@ const NewCrawl = () => {
             setModalClass("hidden");
         }
     }
+
+    /////////////////HANDLE CONSTRAINTS FORM////////////////////
+
+    //state veraiible that holds error messages related to form validation
+    const [errors, setErrors] = useState({
+        crawlName: "",
+        userHardCount: "",
+        urlThreshold: "",
+        paraThreshold: "",
+        pageHardCount: ""
+    });
+
+    const handleFormSubmit = async () => {
+        console.log(userHardCount);
+        console.log(urlThreshold);
+        console.log(errors);
+        // Form validation
+        if (!crawlName || crawlName.trim() === "") {
+            setErrors({ ...errors, crawlName: "Crawl Name is required" });
+        }
+        if (userHardCount > 5000) {
+            setErrors({ ...errors, userHardCount: "Max URLs Traversed cannot exceed 5000" });
+        }
+        if (urlThreshold > 1) {
+            console.log("hit")
+            setErrors({ ...errors, urlThreshold: "URL Score Threshold cannot exceed 1" });
+        }
+        if (paraThreshold > 1) {
+            setErrors({ ...errors, paraThreshold: "Page Score Threshold cannot exceed 1" });
+        }
+        if (pageHardCount > 10) {
+            setErrors({ ...errors, pageHardCount: "Max Pages Downloaded cannot exceed 10" });
+        }
+        if ((!crawlName || crawlName.trim() !== "") && userHardCount <= 5000 && urlThreshold <= 1 && paraThreshold <= 1 && pageHardCount <= 10){
+               // If all validations pass, proceed with form submission
+            toggleModal();
+            alert("Form submitted successfully");
+            return;
+        }
+        else{
+            alert("Follow constraint form requirements and try to submit again.");
+            return;
+        }   
+    }; 
+
     //////////////POST REQUEST//////////////////
 
     async function sendPostRequest(){
@@ -112,53 +157,47 @@ const NewCrawl = () => {
         }
         catch(error){
             spinner.classList.toggle('hide');
-            console.error('Error:', error);
+            //console.error('View error messages and try again:', error);
+            console.alert('View error messages and try again');
         }
     }
 
     //////////////CONSTAINTS FORM INPUT STUFF///////////////////////
     const handleCrawlNameChange = (event) => {
         setCrawlName(event.target.value);
-    }
-    const handleUserHardCountChange = (event) =>  {
-        if(event.target.value > 5000){
-            setUserHardCount(0);
-        }
-        else{
-            setUserHardCount(event.target.value);
-        }
+        setErrors({ ...errors, crawlName: "" }); // Reset error message
     };
+    
+    const handleUserHardCountChange = (event) => {
+        const value = parseInt(event.target.value, 10);
+        setUserHardCount(value);
+        setErrors({ ...errors, userHardCount: "" });
+    };
+    
     const handleURLThresholdChange = (event) => {
-        if(event.target.value > 1){
-            setUrlThreshold(0.2);
-        }
-        else{
-            setUrlThreshold(event.target.value);
-        }
-    }
+        const value = parseFloat(event.target.value);
+        setUrlThreshold(value);
+        setErrors({ ...errors, urlThreshold: "" });
+    };
+    
     const handleParaThresholdChange = (event) => {
-        if(event.target.value > 1){
-            setParaThreshold(0.5);
-        }
-        else{
-            setParaThreshold(event.target.value)
-        }
-    }
+        const value = parseFloat(event.target.value);
+        setParaThreshold(value);
+        setErrors({ ...errors, paraThreshold: "" }); 
+    };
+    
     const handlePageTotalChange = (event) => {
-        if(event.target.value > 10){
-            setPageHardCount(2);
-        }
-        else{
-            setPageHardCount(event.target.value);
-        }
-    }
-
+        const value = parseInt(event.target.value, 10);
+        setPageHardCount(value);
+        setErrors({ ...errors, pageHardCount: "" }); 
+    };
+    
 
     return (
     <>
         <div className={`modal__container ${modalClass}`}>
         {/* <Banner /> */}
-        <button className="close__button" onClick={toggleModal}>X</button>
+        <button className="close__button" onClick={handleFormSubmit}>Submit</button>
         <h1 className="modal__header">Change Crawl Constraints</h1>
         <h3 className="modal__instructions">Edit the Parameters for the Crawl, maxes are 5000 URLs, 10 pages, and 1.0 for Tresholds. They will reset to their defaults in error.</h3>
             <div className="constraint__wrapper">
@@ -173,7 +212,9 @@ const NewCrawl = () => {
                         id="text-input"
                         value={crawlName}
                         onChange={handleCrawlNameChange}
+                        required
                     />
+                    {errors.crawlName && <div className="error">{errors.crawlName}</div>}
                 </div>
                 <div className="user__hardcount--container">
                     <label className="hardcount__label" htmlFor="text-input">Max URLs Traversed: </label>
@@ -183,7 +224,9 @@ const NewCrawl = () => {
                         id="text-input"
                         value={userHardCount}
                         onChange={handleUserHardCountChange}
+                        max="5000"
                     />
+                    {errors.userHardCount && <div className="error">{errors.userHardCount}</div>}
                 </div>
                 <div className="user__hardcount--container">
                     <label className="hardcount__label" htmlFor="text-input">URL Score Threshold: </label>
@@ -193,7 +236,10 @@ const NewCrawl = () => {
                         id="text-input"
                         value={urlThreshold}
                         onChange={handleURLThresholdChange}
+                        max="1"
+                        step="0.01"
                     />
+                    {errors.urlThreshold && <div className="error">{errors.urlThreshold}</div>} {/* Error message */}
                 </div>
                 <div className="user__hardcount--container">
                     <label className="hardcount__label" htmlFor="text-input">Page Score Threshold:</label>
@@ -203,7 +249,10 @@ const NewCrawl = () => {
                         id="text-input"
                         value={paraThreshold}
                         onChange={handleParaThresholdChange}
+                        max="1"
+                        step="0.01"
                     />
+                    {errors.paraThreshold && <div className="error">{errors.paraThreshold}</div>} {/* Error message */}
                 </div>
                 <div className="user__hardcount--container">
                     <label className="hardcount__label" htmlFor="text-input">Max Pages Downloaded:</label>
@@ -213,9 +262,11 @@ const NewCrawl = () => {
                         id="text-input"
                         value={pageHardCount}
                         onChange={handlePageTotalChange}
+                        max="10"
                     />
+                    {errors.pageHardCount && <div className="error">{errors.pageHardCount}</div>} {/* Error message */}
                 </div>
-                <h3 className="modal__instructions">Done entering? Click the "X" On The Bottom Left.</h3>
+                <h3 className="modal__instructions">Done entering? Click the "Submit" to submit the constraints.</h3>
             </div>
       </div>
 

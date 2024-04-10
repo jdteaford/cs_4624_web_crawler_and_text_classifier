@@ -259,6 +259,13 @@ MODAL CSS
   opacity: 1;
   z-index: 100;
 }
+.error {
+  color: rgb(169, 28, 28);
+  font-size: 0.8rem; /* Adjust font size as needed */
+  margin-top: 0.2rem; /* Add some space between input and error message */
+  font-weight: bold; 
+}
+
 
 /*
 Spinner stuff
