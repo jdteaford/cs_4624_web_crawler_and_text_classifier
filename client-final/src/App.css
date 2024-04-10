@@ -188,20 +188,22 @@ MODAL CSS
 
 */
 
-.modal__container{
-  position: absolute;
+.modal__container {
+  position: fixed; /* Change from absolute to fixed */
   background-color: #FF7F50;
-  width: 1000px;
-  height: 500px;
+  width: 80%; /* Change width to 80% */
+  height: 80%; /* Change height to 80% */
   border-radius: 7px;
-  top: 40%;
+  top: 50%; /* Position from the center vertically */
+  left: 50%; /* Position from the center horizontally */
+  transform: translate(-50%, -50%); /* Center the modal */
   transition: all 350ms ease;
-  box-shadow: 0 20px 80px 0 rgb(0,0,0,0.45);
+  box-shadow: 0 20px 80px 0 rgba(0,0,0,0.45);
   z-index: 100;
 }
-.close__button{
+.close__button{  
   position: absolute;
-  left: 25px;
+  right: 25px;
   bottom: 15px;
   z-index: 100;
   border: none;

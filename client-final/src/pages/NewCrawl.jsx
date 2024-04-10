@@ -109,7 +109,7 @@ const NewCrawl = () => {
         if (pageHardCount > 10) {
             setErrors({ ...errors, pageHardCount: "Max Pages Downloaded cannot exceed 10" });
         }
-        if ((!crawlName || crawlName.trim() !== "") && userHardCount <= 5000 && urlThreshold <= 1 && paraThreshold <= 1 && pageHardCount <= 10){
+        if ((crawlName || crawlName.trim() !== "") && userHardCount <= 5000 && urlThreshold <= 1 && paraThreshold <= 1 && pageHardCount <= 10){
                // If all validations pass, proceed with form submission
             toggleModal();
             alert("Form submitted successfully");
