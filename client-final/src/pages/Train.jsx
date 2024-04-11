@@ -65,7 +65,7 @@ const Train = () => {
     //   console.error("Error reading zip file:", error);
     // }
   };
-
+  
   const submitForm = async (path, formData) => {
     try {
       const response = await fetch(path, {
