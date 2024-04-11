@@ -4,6 +4,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 //import './Train.css'
 import '../stylesheets/train.css';
+import {jwtDecode} from 'jwt-decode';
 
 const Train = () => {
   const [trainData, setTrainData] = useState([]);
@@ -18,25 +19,37 @@ const Train = () => {
     }]
   });
 
+  const [userName, setUserName] = useState("");
+
   useEffect(() => {
     // Register Chart.js scales
     Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
   }, []);
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if(token) {
+    const decodedToken = jwtDecode(token);
+    console.log(decodedToken);
+    setUserName(decodedToken.sub);
+    }
+  }, []);
+
   const train = async () => {
     const path = 'http://localhost:5000/train';
     let formData = new FormData();
+
+    setTrainModelType('ae');
+    setTrainDataType('txt');
+
     formData.append("data", trainData[0]);
     formData.append("data_type", trainDataType);
     formData.append("model_type", trainModelType);
+    formData.append("username", userName);
 
-    // PRINTING ENTIRES IN THE FORMDATA
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    console.log(userName);
 
-    // FORMDATA IS EMPTY
-    console.log("FormData:", formData);
     await submitForm(path, formData);
   };
 
@@ -113,7 +126,7 @@ const Train = () => {
               <p className="label">Upload Train Data</p>
               <p className="upload_type"><input type="file" onChange={updateTrainData} multiple /></p>
             </div>
-            <div className="align-horizontal">
+            {/* <div className="align-horizontal">
               <p className="label">Train Model Type</p>
               <p className="upload_type">
                 <select value={trainModelType} onChange={(e) => setTrainModelType(e.target.value)}>
@@ -133,7 +146,7 @@ const Train = () => {
                   <option value='txt'>Zipfile of .txt files</option>
                 </select>
               </p>
-            </div>
+            </div> */}
             <div className="align-horizontal">
               <p className="align-center"><button type="button" onClick={train}>Perform Training</button></p>
             </div>
