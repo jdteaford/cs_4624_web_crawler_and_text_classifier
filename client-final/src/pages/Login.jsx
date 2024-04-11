@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import Banner from '../components/Banner';
 import logo from '../crawl_logo.png';
 import { useNavigate } from 'react-router-dom';
 
