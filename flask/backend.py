@@ -113,8 +113,27 @@ def login():
         return jsonify({"error": "Invalid username or password"}), 401
     
 @app.route('/crawl_history', methods=['GET'])
+@jwt_required()
 def crawl_history():
-    return jsonify({"blank"}), 200
+    # print("hello")
+    try:
+        # Extract user_id from JWT token
+        user_id = get_jwt_identity()
+        print("USER ID IS" + user_id)
+
+        #find relevant crawls
+        query = {"Name": user_id}
+        cursor  = db1.crawl_data.find(query)
+        crawl_history_list = list(cursor)
+        for document in crawl_history_list:
+            document['_id'] = str(document['_id'])
+        
+        # Return crawl history data as JSON response
+        return jsonify(crawl_history_list), 200
+    
+    except Exception as e:
+        # Handle any exceptions
+        return jsonify({"error": str(e)}), 500
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 #///////////////////////////////////// the wall /////////////////////////////////////////////////////
