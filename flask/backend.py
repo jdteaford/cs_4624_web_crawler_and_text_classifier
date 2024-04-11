@@ -38,6 +38,7 @@ from bs4 import BeautifulSoup
 
 from gensim.test.utils import lee_corpus_list
 from gensim.models import Word2Vec
+from bson.binary import Binary
 
 model = Word2Vec(lee_corpus_list, vector_size=300, epochs=100)
 word_vectors = model.wv
@@ -57,7 +58,7 @@ jwt = JWTManager(app)
 client = MongoClient('mongodb://localhost:27017/')
 db = client['users']
 db1 = client['crawl_data']
-
+models_db = client['models']
 
 try:
     databases = client.list_database_names()
@@ -137,9 +138,21 @@ def login():
         return jsonify(access_token=access_token), 200
     else:
         return jsonify({"error": "Invalid username or password"}), 401
-    
 
-#////////////////////////////////////////////////////////////////////////////////////////////////////
+@app.route('/save_model', methods=['POST'])
+@jwt_required()
+def save_model():
+    try:
+        user_id = get_jwt_identity()
+        print("USER ID IS" + user_id)
+        pickle_model = request.files['pickleFile'].read()
+        models_db.models.insert_one({"username": user_id, "model": Binary(pickle_model)})
+        return jsonify({"message": "yippe"}), 200
+    except Exception as e:
+        # Handle any exceptions
+        return jsonify({"error": str(e)}), 500
+
+#//////////////////////////////////e//////////////////////////////////////////////////////////////////
 #///////////////////////////////////// the wall //////////////////////////////////////////////////////
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 

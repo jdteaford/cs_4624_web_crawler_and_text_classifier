@@ -91,11 +91,25 @@ const Train = () => {
       const data = await response.json();
       console.log("Res.data[1]: ", data);
       const blob = new Blob([data[1]]);
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'model.pickle';
-      link.click();
-      URL.revokeObjectURL(link.href);
+      // const link = document.createElement('a');
+      // link.href = URL.createObjectURL(blob);
+      // link.download = 'model.pickle';
+      // link.click();
+      // URL.revokeObjectURL(link.href);
+      const pickleModel = new FormData();
+      pickleModel.append('pickleFile', blob, "model.pickle");
+      const token = localStorage.getItem('token');
+
+      const model_save = await fetch('http://127.0.0.1:5000/save_model', {
+        method: 'POST',
+        body: pickleModel,
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const responseText = await model_save.text();
+      alert(responseText);
 
       setTrainedModel(data[1]);
       setGraphData({
