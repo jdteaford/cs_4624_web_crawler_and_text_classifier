@@ -31,7 +31,7 @@ jwt = JWTManager(app)
 client = MongoClient('mongodb://localhost:27017/')
 db = client['users']
 db1 = client['crawl_data']
-
+models_db = client['models']
 
 try:
     databases = client.list_database_names()
@@ -101,8 +101,7 @@ def login():
     user_info = request.json
     username = user_info['username']
     password = user_info['password']
-
-
+    
     user = db.users.find_one({"username": username})
     print(user)
 
@@ -131,6 +130,19 @@ def crawl_history():
         # Return crawl history data as JSON response
         return jsonify(crawl_history_list), 200
     
+    except Exception as e:
+        # Handle any exceptions
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/save_model', methods=['POST'])
+@jwt_required()
+def save_model():
+    try:
+        user_id = get_jwt_identity()
+        print("USER ID IS" + user_id)
+        pickle_model = request.files['pickleFile'].read()
+        models_db.models.insert_one({"username": user_id, "model": Binary(pickle_model), "model_name": str(request.form["model_name"]) })
+        return jsonify({"message": "real"}), 200
     except Exception as e:
         # Handle any exceptions
         return jsonify({"error": str(e)}), 500
@@ -284,7 +296,7 @@ def pop_scrape():
                 for paragraph in soup.find_all('p'):
                     text += paragraph.get_text() + "\n"
             
-                hold_para_score = predict(text, keywords)
+                hold_para_score = model_inference(text)
                
                 # Download current URL's HTML file to Firebase Storage
                 global page_count, pageDownloadTotal
@@ -384,6 +396,160 @@ def run_to_db(user_id, crawl_name, crawl_id):
 
     db1.crawl_data.insert_one(data)
 
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+#///////////////////////////////////// the wall 2 //////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+
+class DocSim:
+    def __init__(self, stopwords=None):
+        self.stopwords = stopwords if stopwords is not None else []
+
+    def vectorize(self, doc):
+        vectors = np.empty((doc.shape[0], 300))
+        # print("Shape is", doc.shape[0])
+        for idx, row in enumerate(doc['Text']):
+            words = [w for w in row.split(" ") if w not in self.stopwords]
+            word_vecs = []
+            for word in words:
+                try:
+                    vec = wv[word]
+                    word_vecs.append(vec)
+                except KeyError:
+                    pass
+            vectors[idx] = np.mean(word_vecs, axis=0)
+        return vectors
+
+    def _cosine_sim(self, vecA, vecB):
+        csim = np.dot(vecA, vecB) / (np.linalg.norm(vecA) * np.linalg.norm(vecB))
+        if np.isnan(np.sum(csim)):
+            return 0
+        return csim
+
+    def calculate_similarity(self, source_doc, target_docs=None, threshold=0):
+        if not target_docs:
+            return []
+
+        if isinstance(target_docs, str):
+            target_docs = [target_docs]
+
+        source_vec = self.vectorize(source_doc)
+        results = []
+        for doc in target_docs:
+
+            target_vec = self.vectorize(doc)
+            sim_score = self._cosine_sim(source_vec, target_vec)
+            if sim_score > threshold:
+                results.append({"score": sim_score, "doc": doc})
+            results.sort(key=lambda k: k["score"], reverse=True)
+
+        return results
+
+@app.route('/train', methods=['POST'])
+def train():
+
+    # Get model type
+    model_type = request.form.get('model_type')
+
+    # Get data type
+    data_type = request.form.get('data_type')
+
+    # Load data
+    data_file = request.files.get('data')
+    data_file.save('data')
+
+    return jsonify(train_model(model_type, data_type))
+
+def train_autoencoder(df):
+    df.to_csv("train_data.csv", index=False)
+    train_vectors = preprocess_data(df)
+
+    model = MLPRegressor(hidden_layer_sizes=(600, 50, 600))
+    model.fit(train_vectors, train_vectors)
+
+    s = pickle.dumps(model)
+    s = base64.b64encode(s).decode("ascii")
+
+    return (np.array(model.loss_curve_) * 100).tolist(), s
+
+def preprocess_data(df):
+    filters = [
+           gsp.strip_tags, 
+           gsp.strip_punctuation,
+           gsp.strip_multiple_whitespaces,
+           gsp.strip_numeric,
+           gsp.remove_stopwords, 
+           gsp.strip_short, 
+           gsp.stem_text
+          ]
+
+    df['Text'] = df['Text'].map(lambda x: clean_text(x, filters))
+
+    ds = DocSim()
+    return ds.vectorize(df)
+
+def train_model(model_type, data_type):
+    df = pd.DataFrame(columns=['Text'])
+    # print(model_type)
+    # print(data_type)
+    # print(df)
+    with ZipFile('data') as zipfile:  # Assuming 'data.zip' is your zip file
+        for filename in tqdm(zipfile.infolist()):
+            with zipfile.open(filename) as file:
+                # print("Processing file:", filename)  # Add this line to print the current file being processed
+                if re.match('url_.*.txt', file.name) is not None:
+                    f = pd.DataFrame([file.read()], columns=['Text'])
+                    # print("Created DataFrame from text:", f)  # Print the DataFrame created from the text
+                    df = pd.concat([df, f])
+                    # print("DataFrame after concatenation:", df)  # Print the DataFrame after concatenating with the new DataFrame
+    # print(df)
+
+    if model_type == "ae":
+        return train_autoencoder(df)
+
+def clean_text(s, filters):
+    s = s.lower()
+    s = utils.to_unicode(s)
+    for f in filters:
+        s = f(s)
+    return s
+
+def inference_autoencoder(df):
+    train_df = pd.read_csv("train_data.csv", index_col=False)
+    train_vectors = preprocess_data(train_df)
+
+    test_vectors = preprocess_data(df)
+    # test_output = model.predict(test_vectors)
+
+    # mse = lambda doc_idx: mean_squared_error(test_vectors[doc_idx], test_output[doc_idx])
+    # mse_vals = list(map(mse, range(test_output.shape[0])))
+
+    similarities = cosine_similarity(train_vectors, test_vectors).mean(axis=0)
+
+    return similarities.tolist()
+
+
+def model_inference(text):
+    # with open('model', 'r') as f:
+        # pickle_string = f.read()
+        # pickle_bytes = base64.b64decode(pickle_string)
+        # model = pickle.loads(pickle_bytes)
+
+    df = pd.DataFrame([text] ,columns=['Text'])
+
+    # with ZipFile('data') as zipfile:
+    #     for filename in tqdm(zipfile.infolist()):
+    #         with zipfile.open(filename) as file:
+    #             df, document_names = process_file(file, df, filename, document_names, data_type)
+
+    return inference_autoencoder(df)[0]
+
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+#///////////////////////////////////// the wall 3 //////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////////////////////////////////////////////////
+
+@app.route('/get_models', methods = ["POST"])
+    
+    
 #endpoint that performs crawl
 @app.route('/scrape_and_save', methods = ["POST"])
 def scrape_and_save():
