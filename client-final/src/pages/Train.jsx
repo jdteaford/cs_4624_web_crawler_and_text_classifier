@@ -40,7 +40,9 @@ const Train = () => {
     }
   }, []);
 
-  const train = async () => {
+  const train = async (e) => {
+
+    e.preventDefault();
     const path = 'http://localhost:5000/train';
     let formData = new FormData();
 
@@ -55,6 +57,7 @@ const Train = () => {
   };
 
   const updateTrainData = async (event) => {
+    event.preventDefault();
     const files = event.target.files;
     setTrainData(files);
 
@@ -80,7 +83,9 @@ const Train = () => {
     // }
   };
 
-    const handleModelName = (e) => { setModelName(e.target.value) };
+    const handleModelName = (e) => {
+      e.preventDefault();
+      setModelName(e.target.value) };
   
   const submitForm = async (path, formData) => {
     try {
@@ -138,15 +143,15 @@ const Train = () => {
         <div className="title">
           <h2 id="titletrain">Perform Training</h2>
         </div>
+        <div className='align-horizontal'>
+            <p className='label'>Model Name</p>
+            <p className='upload_type'><input type="text" onChange={e => handleModelName(e)} /></p>
+        </div>
         <form className="main_form">
           <div className="content-left">
             <div className="align-horizontal">
               <p className="label">Upload Train Data</p>
-              <p className="upload_type"><input type="file" onChange={updateTrainData} multiple /></p>
-            </div>
-            <div className='align-horizontal'>
-              <p className='label'>Model Name</p>
-              <p className='upload_type'><input type="text" onChange={e =>handleModelName(e)} /></p>
+              <p className="upload_type"><input type="file" onChange={e => updateTrainData(e)} multiple /></p>
             </div>
             {/* <div className="align-horizontal">
               <p className="label">Train Model Type</p>
@@ -170,7 +175,7 @@ const Train = () => {
               </p>
             </div> */}
             <div className="align-horizontal">
-              <p className="align-center"><button type="button" onClick={train}>Perform Training</button></p>
+              <p className="align-center"><button type="button" onClick={e => train(e)}>Perform Training</button></p>
             </div>
           </div>
         </form>
