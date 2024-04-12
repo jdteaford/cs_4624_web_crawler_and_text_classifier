@@ -92,15 +92,11 @@ function Banner({ imageUrl, children }) {
           }}>
             <img src={imageUrl} alt="Ribbon Image" style={{
               height: '50px', // Adjust based on your needs
-            //   width: '50px', // Adjust based on your needs
-              borderRadius: '50%',
-              marginRight: '50px',
+            //   width: '50px', // Adjust based on your need
             }} />
             <span>{children}</span>
             <div>
-                <span>{user}</span>
-                {/* <h1 style={styles.h1}>Welcome, {user}</h1> */}
-                {/* <h2 style={styles.h2}>Automated Crisis Events Collection Interface</h2> */}
+                <span style={{ marginRight: "10px" }}>{user}</span>
                 <LogoutButton />
             </div>
             {/* Display user information and logout button if user is logged in */}
