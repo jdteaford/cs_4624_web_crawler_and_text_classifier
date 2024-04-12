@@ -128,8 +128,7 @@ def login():
     user_info = request.json
     username = user_info['username']
     password = user_info['password']
-
-
+    
     user = db.users.find_one({"username": username})
     print(user)
 
@@ -301,7 +300,7 @@ def pop_scrape():
                 for paragraph in soup.find_all('p'):
                     text += paragraph.get_text() + "\n"
             
-                hold_para_score = predict(text, keywords)
+                hold_para_score = model_inference(text)
                
                 # Download current URL's HTML file to Firebase Storage
                 global page_count, pageDownloadTotal
@@ -517,6 +516,36 @@ def clean_text(s, filters):
     for f in filters:
         s = f(s)
     return s
+
+def inference_autoencoder(df):
+    train_df = pd.read_csv("train_data.csv", index_col=False)
+    train_vectors = preprocess_data(train_df)
+
+    test_vectors = preprocess_data(df)
+    # test_output = model.predict(test_vectors)
+
+    # mse = lambda doc_idx: mean_squared_error(test_vectors[doc_idx], test_output[doc_idx])
+    # mse_vals = list(map(mse, range(test_output.shape[0])))
+
+    similarities = cosine_similarity(train_vectors, test_vectors).mean(axis=0)
+
+    return similarities.tolist()
+
+
+def model_inference(text):
+    # with open('model', 'r') as f:
+        # pickle_string = f.read()
+        # pickle_bytes = base64.b64decode(pickle_string)
+        # model = pickle.loads(pickle_bytes)
+
+    df = pd.DataFrame([text] ,columns=['Text'])
+
+    # with ZipFile('data') as zipfile:
+    #     for filename in tqdm(zipfile.infolist()):
+    #         with zipfile.open(filename) as file:
+    #             df, document_names = process_file(file, df, filename, document_names, data_type)
+
+    return inference_autoencoder(df)[0]
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 #///////////////////////////////////// the wall 3 //////////////////////////////////////////////////////
