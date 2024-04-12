@@ -146,13 +146,13 @@ def save_model():
         user_id = get_jwt_identity()
         print("USER ID IS" + user_id)
         pickle_model = request.files['pickleFile'].read()
-        models_db.models.insert_one({"username": user_id, "model": Binary(pickle_model)})
-        return jsonify({"message": "yippe"}), 200
+        models_db.models.insert_one({"username": user_id, "model": Binary(pickle_model), "model_name": str(request.form["model_name"]) })
+        return jsonify({"message": "real"}), 200
     except Exception as e:
         # Handle any exceptions
         return jsonify({"error": str(e)}), 500
 
-#//////////////////////////////////e//////////////////////////////////////////////////////////////////
+#////////////////////////////////////////////////////////////////////////////////////////////////////
 #///////////////////////////////////// the wall //////////////////////////////////////////////////////
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -522,6 +522,9 @@ def clean_text(s, filters):
 #///////////////////////////////////// the wall 3 //////////////////////////////////////////////////////
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
+@app.route('/get_models', methods = ["POST"])
+    
+    
 #endpoint that performs crawl
 @app.route('/scrape_and_save', methods = ["POST"])
 def scrape_and_save():

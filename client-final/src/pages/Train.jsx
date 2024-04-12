@@ -20,10 +20,14 @@ const Train = () => {
   });
 
   const [userName, setUserName] = useState("");
+  
+  const [model_name, setModelName] = useState("");
 
   useEffect(() => {
     // Register Chart.js scales
     Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+    setTrainModelType('ae');
+    setTrainDataType('txt');
   }, []);
 
   useEffect(() => {
@@ -39,9 +43,6 @@ const Train = () => {
   const train = async () => {
     const path = 'http://localhost:5000/train';
     let formData = new FormData();
-
-    setTrainModelType('ae');
-    setTrainDataType('txt');
 
     formData.append("data", trainData[0]);
     formData.append("data_type", trainDataType);
@@ -78,6 +79,8 @@ const Train = () => {
     //   console.error("Error reading zip file:", error);
     // }
   };
+
+    const handleModelName = (e) => { setModelName(e.target.value) };
   
   const submitForm = async (path, formData) => {
     try {
@@ -98,6 +101,7 @@ const Train = () => {
       // URL.revokeObjectURL(link.href);
       const pickleModel = new FormData();
       pickleModel.append('pickleFile', blob, "model.pickle");
+      pickleModel.append('model_name',  model_name);
       const token = localStorage.getItem('token');
 
       const model_save = await fetch('http://127.0.0.1:5000/save_model', {
@@ -139,6 +143,10 @@ const Train = () => {
             <div className="align-horizontal">
               <p className="label">Upload Train Data</p>
               <p className="upload_type"><input type="file" onChange={updateTrainData} multiple /></p>
+            </div>
+            <div className='align-horizontal'>
+              <p className='label'>Model Name</p>
+              <p className='upload_type'><input type="text" onChange={e =>handleModelName(e)} /></p>
             </div>
             {/* <div className="align-horizontal">
               <p className="label">Train Model Type</p>

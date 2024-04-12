@@ -258,6 +258,14 @@ const NewCrawl = () => {
                     :
                     <></>
                 }
+                {/* {
+                    selectedFile != null && userName && crawlName ? 
+                    <select value={model} >
+                        
+                    </select>
+                    :
+                    <></>
+                } */}
             </div>
         </div>
         <div className="spinner--wrapper hide" id="spinner--wrapper">

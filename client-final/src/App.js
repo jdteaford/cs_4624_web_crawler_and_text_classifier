@@ -1,6 +1,5 @@
 import './App.css';
 import { createUseStyles } from 'react-jss';
-
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 // import { AuthProvider, useAuth } from './auth';
