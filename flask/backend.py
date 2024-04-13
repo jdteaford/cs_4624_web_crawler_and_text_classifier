@@ -18,6 +18,33 @@ import json
 import os
 from urllib.parse import urlparse
 import re
+import numpy as np 
+import pickle
+import pandas as pd
+from gensim.models import KeyedVectors
+from gensim import utils
+import gensim.parsing.preprocessing as gsp
+from tqdm import tqdm
+from zipfile import ZipFile
+from sklearn import svm
+from sklearn.manifold import TSNE
+from sklearn.neural_network import MLPRegressor
+from sklearn.metrics.pairwise import cosine_similarity
+from sklearn.metrics import mean_squared_error
+import base64
+from requests_html import HTMLSession
+import requests
+from bs4 import BeautifulSoup
+
+from gensim.test.utils import lee_corpus_list
+from gensim.models import Word2Vec
+from bson.binary import Binary
+
+model = Word2Vec(lee_corpus_list, vector_size=300, epochs=100)
+word_vectors = model.wv
+
+word_vectors.save('vectors.kv')
+wv = KeyedVectors.load('vectors.kv')
 
 
 app = Flask(__name__)
@@ -95,7 +122,7 @@ def register():
     access_token = create_access_token(identity=username)
     return jsonify(access_token=access_token), 201
 
-    
+
 @app.route('/login', methods=['POST'])
 def login():
     user_info = request.json
@@ -111,6 +138,7 @@ def login():
     else:
         return jsonify({"error": "Invalid username or password"}), 401
     
+
 @app.route('/crawl_history', methods=['GET'])
 @jwt_required()
 def crawl_history():
@@ -133,7 +161,7 @@ def crawl_history():
     except Exception as e:
         # Handle any exceptions
         return jsonify({"error": str(e)}), 500
-    
+
 @app.route('/save_model', methods=['POST'])
 @jwt_required()
 def save_model():
@@ -148,7 +176,7 @@ def save_model():
         return jsonify({"error": str(e)}), 500
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-#///////////////////////////////////// the wall /////////////////////////////////////////////////////
+#///////////////////////////////////// the wall //////////////////////////////////////////////////////
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # Priority Queue --------------------------------------------------------------------------------------------------------------
@@ -237,7 +265,7 @@ def get_base_url(url):
     parsed_url = urlparse(url)
     return f"{parsed_url.scheme}://{parsed_url.netloc}"
   
-keywords = ["Monterey", "Park", "California", "mass", "shooting", "mass", "shooting", "Lunar", "New", "Year", "Los", "Angeles", "mass", "shooting",    "Lunar", "New", "Year", "shooting",    "California", "shooting",    "Mass", "shooting", "victims",    "Monterey", "Park", "mass", "shooter",    "Mayor", "Karen", "Bass",    "Victims", "identified",    "Gunman", "manhunt",    "Police", "search", "motive",    "Back-to-back", "mass", "shootings",    "Suspected", "shooter",    "Gun", "safety",    "LAPD", "response",    "Manifesto",    "Asian", "American", "communities",    "Joe", "Biden", "statement",    "Shooting", "at", "dance", "club",    "Kinship", "with", "U.S.", "city",    "Monterey", "Park", "essay",    "911", "call", "audio",    "Biden's", "executive", "order", "on", "gun", "control", "Shooting", "at", "Chinese", "New", "Year", "celebration",    "General", "news",    "Shooting", "near", "Lunar", "New", "Year", "festival",    "Processing", "a", "tragedy",    "Community", "mourns",    "Georgia", "shooting",    "Active", "shooter",    "Hampton", "Georgia", "shooting",    "Midtown", "Atlanta", "shooting",    "Northside", "Hospital",    "Hospital", "massacre",    "Deion", "Patterson",    "Massacre", "suspect", "charged",    "What", "we", "know", "about", "the", "victims",    "Victims", "of", "mass", "shooting",    "Hospital", "shooting", "in", "Atlanta",    "Mass", "shooting", "reports",    "Canada", "shooting",    "Monterey", "Park", "press", "release",    "National", "news",    "Multiple", "casualties",    "Gunman's", "manifesto",    "Gun", "control",    "Biden", "statement",    "Mass", "shooting", "response",    "Medical", "facility", "shooting",    "University", "of", "North", "Carolina", "shooting","Zijie", "Yan",    "UNC", "shooting", "victim",    "Active", "shooter", "situation",    "West", "Peachtree", "Street",    "Spa", "shootings","Atlanta", "shooting",    "Atlanta", "Midtown", "shooting",    "Suspect", "Deion", "Patterson",    "Mass", "shooting", "on", "loose",    "Policing", "Equity"]
+keywords = ["Monterey", "Park", "California", "mass", "shooting", "mass", "shooting", "Lunar", "New", "Year", "Los", "Angeles", "mass", "shooting",   "Lunar", "New", "Year", "shooting",    "California", "shooting",    "Mass", "shooting", "victims",    "Monterey", "Park", "mass", "shooter",    "Mayor", "Karen", "Bass",    "Victims", "identified",    "Gunman", "manhunt",    "Police", "search", "motive",    "Back-to-back", "mass", "shootings",    "Suspected", "shooter",    "Gun", "safety",    "LAPD", "response",    "Manifesto",    "Asian", "American", "communities",    "Joe", "Biden", "statement",    "Shooting", "at", "dance", "club",    "Kinship", "with", "U.S.", "city",    "Monterey", "Park", "essay",    "911", "call", "audio",    "Biden's", "executive", "order", "on", "gun", "control", "Shooting", "at", "Chinese", "New", "Year", "celebration",    "General", "news",    "Shooting", "near", "Lunar", "New", "Year", "festival",    "Processing", "a", "tragedy",    "Community", "mourns",    "Georgia", "shooting",    "Active", "shooter",    "Hampton", "Georgia", "shooting",    "Midtown", "Atlanta", "shooting",    "Northside", "Hospital",    "Hospital", "massacre",    "Deion", "Patterson",    "Massacre", "suspect", "charged",    "What", "we", "know", "about", "the", "victims",    "Victims", "of", "mass", "shooting",    "Hospital", "shooting", "in", "Atlanta",    "Mass", "shooting", "reports",    "Canada", "shooting",    "Monterey", "Park", "press", "release",    "National", "news",    "Multiple", "casualties",    "Gunman's", "manifesto",    "Gun", "control",    "Biden", "statement",    "Mass", "shooting", "response",    "Medical", "facility", "shooting",    "University", "of", "North", "Carolina", "shooting","Zijie", "Yan",    "UNC", "shooting", "victim",    "Active", "shooter", "situation",    "West", "Peachtree", "Street",    "Spa", "shootings","Atlanta", "shooting",    "Atlanta", "Midtown", "shooting",    "Suspect", "Deion", "Patterson",    "Mass", "shooting", "on", "loose",    "Policing", "Equity"]
 
 urlThreshold = 0.0
 paraThreshold = 0.0
@@ -641,8 +669,8 @@ def get_avgs_of_succ():
             # Handle the case where there are no scores (to avoid division by zero)
             stats['avg_score'] = 0.0   
 
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
-
 
 
