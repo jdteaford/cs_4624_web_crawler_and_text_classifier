@@ -289,3 +289,30 @@ Spinner stuff
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Test for the new card component */
+.card-comp {
+  background-color: #cb9282;
+  /* position: relative; */
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* justify-content: center; */
+  /* align-items: center; */
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: auto;
+  /* Width and height will be controlled via props */
+}
+
+.card-comp-header {
+  max-width: 80%;
+  text-align: center;
+  color: #222725;
+}
+
+.card-comp-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
