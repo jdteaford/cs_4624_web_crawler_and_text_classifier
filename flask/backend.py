@@ -35,6 +35,7 @@ import base64
 from requests_html import HTMLSession
 import requests
 from bs4 import BeautifulSoup
+from io import StringIO
 
 from gensim.test.utils import lee_corpus_list
 from gensim.models import Word2Vec
@@ -168,8 +169,9 @@ def save_model():
     try:
         user_id = get_jwt_identity()
         print("USER ID IS" + user_id)
-        pickle_model = request.files['pickleFile'].read()
-        models_db.models.insert_one({"username": user_id, "model": Binary(pickle_model), "model_name": str(request.form["model_name"]) })
+        # pickle_model = request.files['pickleFile'].read()
+        # models_db.models.insert_one({"username": user_id, "model": Binary(pickle_model), "model_name": str(request.form["model_name"]) })
+        models_db.models.insert_one({"username": user_id, "model": str(request.form["model"]), "model_name": str(request.form["model_name"]) })
         return jsonify({"message": "real"}), 200
     except Exception as e:
         # Handle any exceptions
@@ -488,8 +490,11 @@ def train():
     return jsonify(train_model(model_type, data_type))
 
 def train_autoencoder(df):
-    df.to_csv("train_data.csv", index=False)
+    csv_buffer = StringIO()
+    df.to_csv(csv_buffer, index=False)
     train_vectors = preprocess_data(df)
+    
+    csv_string = csv_buffer.getvalue()
 
     model = MLPRegressor(hidden_layer_sizes=(600, 50, 600))
     model.fit(train_vectors, train_vectors)
@@ -497,7 +502,7 @@ def train_autoencoder(df):
     s = pickle.dumps(model)
     s = base64.b64encode(s).decode("ascii")
 
-    return (np.array(model.loss_curve_) * 100).tolist(), s
+    return (np.array(model.loss_curve_) * 100).tolist(), s, csv_string 
 
 def preprocess_data(df):
     filters = [

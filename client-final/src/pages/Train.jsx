@@ -105,8 +105,9 @@ const Train = () => {
       // link.click();
       // URL.revokeObjectURL(link.href);
       const pickleModel = new FormData();
-      pickleModel.append('pickleFile', blob, "model.pickle");
+      // pickleModel.append('pickleFile', blob, "model.pickle");
       pickleModel.append('model_name',  model_name);
+      pickleModel.append('model', data[2]);
       const token = localStorage.getItem('token');
 
       const model_save = await fetch('http://127.0.0.1:5000/save_model', {
