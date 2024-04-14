@@ -5,9 +5,12 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'rc-slider/assets/index.css'; // Import the default CSS styles
 //import axios, * as others from 'axios';
 import {jwtDecode} from 'jwt-decode';
-//import Banner from '../components/Banner';
-
 import uniqid from 'uniqid';
+
+import HomeButton from '../components/HomeButton';
+
+import Banner from '../components/Banner';
+import logo from '../trans_web.png';
 
 
 const NewCrawl = () => {
@@ -156,8 +159,9 @@ const NewCrawl = () => {
 
     return (
     <>
+        <Banner imageUrl={logo}>Integrated Web App for Crisis Events Crawling</Banner>
+        <HomeButton/> 
         <div className={`modal__container ${modalClass}`}>
-        {/* <Banner /> */}
         <button className="close__button" onClick={toggleModal}>X</button>
         <h1 className="modal__header">Change Crawl Constraints</h1>
         <h3 className="modal__instructions">Edit the Parameters for the Crawl, maxes are 5000 URLs, 10 pages, and 1.0 for Tresholds. They will reset to their defaults in error.</h3>

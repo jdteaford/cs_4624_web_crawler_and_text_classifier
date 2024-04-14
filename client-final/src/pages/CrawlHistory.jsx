@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../trans_web.png';
 import Banner from '../components/Banner';
-import Card from '../components/Card';
+import Card from '../components/CrawlCard';
+import HomeButton from '../components/HomeButton';
 
 function CrawlHistory() {
     // const [crawlData, setCrawlData] = useState([]); 
@@ -11,7 +12,7 @@ function CrawlHistory() {
         // Retrieve JWT token from local storage
         const token = localStorage.getItem('token');
 
-        // Make GET request with JWT token in the headers
+        // // Make GET request with JWT token in the headers
         fetch('http://127.0.0.1:5000/crawl_history', {
             method: 'GET',
             headers: {
@@ -28,6 +29,7 @@ function CrawlHistory() {
             // Update state with the fetched data
             // setCrawlData(data);
             setCrawlData(JSON.stringify(data, null, 2));
+            console.log(crawlData);
         })
         .catch(error => {
             // Handle errors
@@ -39,17 +41,17 @@ function CrawlHistory() {
     return (
         <div>
             <Banner imageUrl="logo">Web Crawler History</Banner>
-            {/* {crawlData.map((item, index) => (
+            <HomeButton/>
+            {crawlData && JSON.parse(crawlData).map((item, index) => (
                 // Assuming `item` has properties `header` and `body` you want to display
                 <Card 
-                    key={index} 
+                    key={index}
                     width="auto" 
                     height="auto" 
-                    header={item.header} 
-                    body={item.body} 
+                    data={item}
                 />
-            ))} */}
-            <pre style={{
+            ))}
+            {/* <pre style={{
                 color: 'white',
                 textAlign: 'left', 
                 margin: '0 auto',
@@ -57,7 +59,7 @@ function CrawlHistory() {
                 whiteSpace: 'pre-wrap', 
                 wordBreak: 'break-word' 
             }}>
-                {crawlData}</pre>
+                {crawlData}</pre> */}
         </div>
     );
 }
