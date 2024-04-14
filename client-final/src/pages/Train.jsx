@@ -4,6 +4,7 @@ import { Line } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 //import './Train.css'
 import '../stylesheets/train.css';
+import {jwtDecode} from 'jwt-decode';
 
 const Train = () => {
   const [trainData, setTrainData] = useState([]);
@@ -18,29 +19,45 @@ const Train = () => {
     }]
   });
 
+  const [userName, setUserName] = useState("");
+  
+  const [model_name, setModelName] = useState("");
+
   useEffect(() => {
     // Register Chart.js scales
     Chart.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+    setTrainModelType('ae');
+    setTrainDataType('txt');
   }, []);
 
-  const train = async () => {
-    const path = 'http://localhost:8000/train';
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if(token) {
+    const decodedToken = jwtDecode(token);
+    console.log(decodedToken);
+    setUserName(decodedToken.sub);
+    }
+  }, []);
+
+  const train = async (e) => {
+
+    e.preventDefault();
+    const path = 'http://localhost:5000/train';
     let formData = new FormData();
+
     formData.append("data", trainData[0]);
     formData.append("data_type", trainDataType);
     formData.append("model_type", trainModelType);
+    formData.append("username", userName);
 
-    // PRINTING ENTIRES IN THE FORMDATA
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
+    console.log(userName);
 
-    // FORMDATA IS EMPTY
-    console.log("FormData:", formData);
     await submitForm(path, formData);
   };
 
   const updateTrainData = async (event) => {
+    event.preventDefault();
     const files = event.target.files;
     setTrainData(files);
 
@@ -66,6 +83,10 @@ const Train = () => {
     // }
   };
 
+    const handleModelName = (e) => {
+      e.preventDefault();
+      setModelName(e.target.value) };
+  
   const submitForm = async (path, formData) => {
     try {
       const response = await fetch(path, {
@@ -78,11 +99,26 @@ const Train = () => {
       const data = await response.json();
       console.log("Res.data[1]: ", data);
       const blob = new Blob([data[1]]);
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = 'model.pickle';
-      link.click();
-      URL.revokeObjectURL(link.href);
+      // const link = document.createElement('a');
+      // link.href = URL.createObjectURL(blob);
+      // link.download = 'model.pickle';
+      // link.click();
+      // URL.revokeObjectURL(link.href);
+      const pickleModel = new FormData();
+      pickleModel.append('pickleFile', blob, "model.pickle");
+      pickleModel.append('model_name',  model_name);
+      const token = localStorage.getItem('token');
+
+      const model_save = await fetch('http://127.0.0.1:5000/save_model', {
+        method: 'POST',
+        body: pickleModel,
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      const responseText = await model_save.text();
+      alert(responseText);
 
       setTrainedModel(data[1]);
       setGraphData({
@@ -107,13 +143,17 @@ const Train = () => {
         <div className="title">
           <h2 id="titletrain">Perform Training</h2>
         </div>
+        <div className='align-horizontal'>
+            <p className='label'>Model Name</p>
+            <p className='upload_type'><input type="text" onChange={e => handleModelName(e)} /></p>
+        </div>
         <form className="main_form">
           <div className="content-left">
             <div className="align-horizontal">
               <p className="label">Upload Train Data</p>
-              <p className="upload_type"><input type="file" onChange={updateTrainData} multiple /></p>
+              <p className="upload_type"><input type="file" onChange={e => updateTrainData(e)} multiple /></p>
             </div>
-            <div className="align-horizontal">
+            {/* <div className="align-horizontal">
               <p className="label">Train Model Type</p>
               <p className="upload_type">
                 <select value={trainModelType} onChange={(e) => setTrainModelType(e.target.value)}>
@@ -133,9 +173,9 @@ const Train = () => {
                   <option value='txt'>Zipfile of .txt files</option>
                 </select>
               </p>
-            </div>
+            </div> */}
             <div className="align-horizontal">
-              <p className="align-center"><button type="button" onClick={train}>Perform Training</button></p>
+              <p className="align-center"><button type="button" onClick={e => train(e)}>Perform Training</button></p>
             </div>
           </div>
         </form>
