@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from functools import wraps
 
+import io
 import argparse
 import requests
 from bs4 import BeautifulSoup
@@ -123,7 +124,6 @@ def register():
     access_token = create_access_token(identity=username)
     return jsonify(access_token=access_token), 201
 
-
 @app.route('/login', methods=['POST'])
 def login():
     user_info = request.json
@@ -138,7 +138,8 @@ def login():
         return jsonify(access_token=access_token), 200
     else:
         return jsonify({"error": "Invalid username or password"}), 401
-    
+
+
 
 @app.route('/crawl_history', methods=['GET'])
 @jwt_required()
@@ -158,6 +159,31 @@ def crawl_history():
         
         # Return crawl history data as JSON response
         return jsonify(crawl_history_list), 200
+    
+    except Exception as e:
+        # Handle any exceptions
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/models', methods=['GET'])
+@jwt_required()
+def models():
+    # print("hello")
+    try:
+        # Extract user_id from JWT token
+        user_id = get_jwt_identity()
+        print("USER ID IS " + user_id)
+
+        #find relevant crawls
+        query = {"username": user_id}
+        cursor  = models_db.models.find(query)
+        models = list(cursor)
+        for document in models:
+            document['_id'] = str(document['_id'])
+            
+        print(models)
+        
+        # Return crawl history data as JSON response
+        return jsonify(models), 200
     
     except Exception as e:
         # Handle any exceptions
@@ -268,6 +294,8 @@ def get_base_url(url):
     return f"{parsed_url.scheme}://{parsed_url.netloc}"
   
 keywords = ["Monterey", "Park", "California", "mass", "shooting", "mass", "shooting", "Lunar", "New", "Year", "Los", "Angeles", "mass", "shooting",   "Lunar", "New", "Year", "shooting",    "California", "shooting",    "Mass", "shooting", "victims",    "Monterey", "Park", "mass", "shooter",    "Mayor", "Karen", "Bass",    "Victims", "identified",    "Gunman", "manhunt",    "Police", "search", "motive",    "Back-to-back", "mass", "shootings",    "Suspected", "shooter",    "Gun", "safety",    "LAPD", "response",    "Manifesto",    "Asian", "American", "communities",    "Joe", "Biden", "statement",    "Shooting", "at", "dance", "club",    "Kinship", "with", "U.S.", "city",    "Monterey", "Park", "essay",    "911", "call", "audio",    "Biden's", "executive", "order", "on", "gun", "control", "Shooting", "at", "Chinese", "New", "Year", "celebration",    "General", "news",    "Shooting", "near", "Lunar", "New", "Year", "festival",    "Processing", "a", "tragedy",    "Community", "mourns",    "Georgia", "shooting",    "Active", "shooter",    "Hampton", "Georgia", "shooting",    "Midtown", "Atlanta", "shooting",    "Northside", "Hospital",    "Hospital", "massacre",    "Deion", "Patterson",    "Massacre", "suspect", "charged",    "What", "we", "know", "about", "the", "victims",    "Victims", "of", "mass", "shooting",    "Hospital", "shooting", "in", "Atlanta",    "Mass", "shooting", "reports",    "Canada", "shooting",    "Monterey", "Park", "press", "release",    "National", "news",    "Multiple", "casualties",    "Gunman's", "manifesto",    "Gun", "control",    "Biden", "statement",    "Mass", "shooting", "response",    "Medical", "facility", "shooting",    "University", "of", "North", "Carolina", "shooting","Zijie", "Yan",    "UNC", "shooting", "victim",    "Active", "shooter", "situation",    "West", "Peachtree", "Street",    "Spa", "shootings","Atlanta", "shooting",    "Atlanta", "Midtown", "shooting",    "Suspect", "Deion", "Patterson",    "Mass", "shooting", "on", "loose",    "Policing", "Equity"]
+
+model = None
 
 urlThreshold = 0.0
 paraThreshold = 0.0
@@ -501,6 +529,8 @@ def train_autoencoder(df):
 
     s = pickle.dumps(model)
     s = base64.b64encode(s).decode("ascii")
+    
+    csv_buffer.close()
 
     return (np.array(model.loss_curve_) * 100).tolist(), s, csv_string 
 
@@ -547,7 +577,8 @@ def clean_text(s, filters):
     return s
 
 def inference_autoencoder(df):
-    train_df = pd.read_csv("train_data.csv", index_col=False)
+    global model
+    train_df = model
     train_vectors = preprocess_data(train_df)
 
     test_vectors = preprocess_data(df)
@@ -579,8 +610,6 @@ def model_inference(text):
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 #///////////////////////////////////// the wall 3 //////////////////////////////////////////////////////
 #////////////////////////////////////////////////////////////////////////////////////////////////////
-
-@app.route('/get_models', methods = ["POST"])
     
     
 #endpoint that performs crawl
@@ -598,6 +627,12 @@ def scrape_and_save():
         pass
 
     #variables for user hard count caps
+    
+    print(str(request.form['model']))
+    
+    string_io = io.StringIO(str(request.form['model']))
+    global model
+    model = pd.read_csv(string_io,  index_col=False)
     global userHardCount
     userHardCount = int(request.form['urlTotal'])
     global urlThreshold
