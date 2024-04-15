@@ -19,6 +19,8 @@ const deleteAction = (id) => {
         // Check if response is successful (status code in the range 200-299)
         if (response.ok) {
             // If successful, parse response JSON
+            // If deletion is successful, refresh the page
+            window.location.reload();
             return response.json();
         } else {
             // If not successful, throw an error

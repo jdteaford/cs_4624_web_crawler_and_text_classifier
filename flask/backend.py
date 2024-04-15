@@ -174,6 +174,26 @@ def save_model():
     except Exception as e:
         # Handle any exceptions
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/delete_entry', methods=['POST'])
+def delete_entry():
+    if request.method == 'OPTIONS':
+        # Respond to preflight request
+        pass
+
+    request_json = request.get_json()  # Parse request body as JSON
+    if 'id' in request_json:
+        id_string = request_json['id']  # Get the ID string
+        print(id_string)
+        #find relevant crawl
+        query = {"Crawl ID": id_string}
+        result  = db1.crawl_data.delete_one(query)
+        return jsonify({"message": "hit", "acknowledged": result.acknowledged})
+
+    else:
+        print('No ID found in request body')
+        return jsonify({"message": "hit"})
+
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 #///////////////////////////////////// the wall //////////////////////////////////////////////////////
