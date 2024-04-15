@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../trans_web.png';
 import Banner from '../components/Banner';
-import Card from '../components/Card';
 import HomeButton from '../components/HomeButton';
+import Card from '../components/Card';
+
 
 function CrawlHistory() {
     // const [crawlData, setCrawlData] = useState([]); 
