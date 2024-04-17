@@ -7,6 +7,12 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from functools import wraps
 
+import warnings
+
+# Suppress specific RuntimeWarnings
+warnings.filterwarnings("ignore", message="Mean of empty slice.", category=RuntimeWarning)
+warnings.filterwarnings("ignore", message="invalid value encountered in scalar divide", category=RuntimeWarning)
+
 import argparse
 import requests
 from bs4 import BeautifulSoup
@@ -267,13 +273,14 @@ def get_base_url(url):
   
 keywords = ["Monterey", "Park", "California", "mass", "shooting", "mass", "shooting", "Lunar", "New", "Year", "Los", "Angeles", "mass", "shooting",   "Lunar", "New", "Year", "shooting",    "California", "shooting",    "Mass", "shooting", "victims",    "Monterey", "Park", "mass", "shooter",    "Mayor", "Karen", "Bass",    "Victims", "identified",    "Gunman", "manhunt",    "Police", "search", "motive",    "Back-to-back", "mass", "shootings",    "Suspected", "shooter",    "Gun", "safety",    "LAPD", "response",    "Manifesto",    "Asian", "American", "communities",    "Joe", "Biden", "statement",    "Shooting", "at", "dance", "club",    "Kinship", "with", "U.S.", "city",    "Monterey", "Park", "essay",    "911", "call", "audio",    "Biden's", "executive", "order", "on", "gun", "control", "Shooting", "at", "Chinese", "New", "Year", "celebration",    "General", "news",    "Shooting", "near", "Lunar", "New", "Year", "festival",    "Processing", "a", "tragedy",    "Community", "mourns",    "Georgia", "shooting",    "Active", "shooter",    "Hampton", "Georgia", "shooting",    "Midtown", "Atlanta", "shooting",    "Northside", "Hospital",    "Hospital", "massacre",    "Deion", "Patterson",    "Massacre", "suspect", "charged",    "What", "we", "know", "about", "the", "victims",    "Victims", "of", "mass", "shooting",    "Hospital", "shooting", "in", "Atlanta",    "Mass", "shooting", "reports",    "Canada", "shooting",    "Monterey", "Park", "press", "release",    "National", "news",    "Multiple", "casualties",    "Gunman's", "manifesto",    "Gun", "control",    "Biden", "statement",    "Mass", "shooting", "response",    "Medical", "facility", "shooting",    "University", "of", "North", "Carolina", "shooting","Zijie", "Yan",    "UNC", "shooting", "victim",    "Active", "shooter", "situation",    "West", "Peachtree", "Street",    "Spa", "shootings","Atlanta", "shooting",    "Atlanta", "Midtown", "shooting",    "Suspect", "Deion", "Patterson",    "Mass", "shooting", "on", "loose",    "Policing", "Equity"]
 
+
 urlThreshold = 0.0
 paraThreshold = 0.0
 
 userHardCount = 10
 userScoutCount = 100
 
-pageDownloadTotal = 10 # We broke so we capping the number of downloaded pages. Bruh moment
+pageTotal = 10 # We broke so we capping the number of downloaded pages. Bruh moment
 
 count = 0
 page_count = 0
@@ -306,11 +313,15 @@ def pop_scrape():
 
     if url.url not in processed_url_names:
         # Putting it in the beginning or putting it in at the end? ++x VS x++
+        print("**************************************")
+        print("HEAP URL", url.url)
         processed_url_names.append(url.url)
       
         try:
             response = requests.get(url.url,timeout=7)
+            print("INSIDE TRY")
             if response.status_code == 200:
+                print("INSIDE RESPONSE IF")
 
                 soup = BeautifulSoup(response.content, 'html.parser')
                 
@@ -327,13 +338,14 @@ def pop_scrape():
                 hold_para_score = model_inference(text)
                
                 # Download current URL's HTML file to Firebase Storage
-                global page_count, pageDownloadTotal
-                if page_count < pageDownloadTotal:
+                # global page_count, pageDownloadTotal
+                if page_count < pageTotal:
                     file_name = f'{url.id}.html'
+                    #print(url.url)
 
                     # Specify the path to the HTML file within the folder
                     file_path = f'{crawl_id}/{url.id}.html'
-                    print(file_path)
+                    # print(file_path)
                     try:
                         # blob = storage.bucket(app=firebase_admin.get_app(),name='auto-scrape-crisis.appspot.com').blob(file_path) 
                         # bucket = storage.bucket()
@@ -344,7 +356,7 @@ def pop_scrape():
                         with open(safe_filename, 'w', encoding='utf-8') as f:
                             f.write(response.text)
 
-                        print(f'Successfully uploaded {file_name}')
+                        print(f'Successfully uploaded {url.url}')
                     except Exception as e:
                         print(f'Error: {e}')
                     page_count+=1
@@ -367,11 +379,22 @@ def pop_scrape():
 
 
                     if count < userHardCount: # COUNT VS PAGE_COUNT???
-                        anchor_score = predict(f"{anchor_info['url']} {anchor_info['text']}", keywords)
+                        anchor_string = f"{anchor_info['url']} {anchor_info['text']}"
+                        wtf = " ".join(anchor_string.replace('\n', '').split())
+                        # anchor_score = predict(f"{anchor_info['url']} {anchor_info['text']}", keywords)
+                        # print("Shitter", f"{anchor_info['url']} {anchor_info['text']}")
+                        # print("FUCKER", wtf)
+                        anchor_score = model_inference(wtf)
                         
                         if anchor_score != None and anchor_score >= urlThreshold:
                             avg_score = (anchor_score+hold_para_score)/2
                             temp = URLobj(count,anchor_info['url'],anchor_score,hold_para_score,avg_score,url.id)
+                            print("--------------------------------------")
+                            print("URL", anchor_info['url'])
+                            print("Para Score", hold_para_score)
+                            print("Anchor Score", anchor_score)
+                            print("Average Score", avg_score)
+                            # print("--------------------------------------")
 
                             # page_count+=1
                             #print(f"adding to heap: {anchor_info['url']}")
@@ -419,8 +442,8 @@ def run_to_db(user_id, crawl_name, crawl_id):
         # "Tree": temp
     }
     stringVar = "hello"
-    print(stringVar)
-    print(data)
+    # print(stringVar)
+    # print(data)
 
     db1.crawl_data.insert_one(data)
 
@@ -437,14 +460,17 @@ class DocSim:
         # print("Shape is", doc.shape[0])
         for idx, row in enumerate(doc['Text']):
             words = [w for w in row.split(" ") if w not in self.stopwords]
+            # print(words)
             word_vecs = []
             for word in words:
                 try:
                     vec = wv[word]
                     word_vecs.append(vec)
                 except KeyError:
+                    # print("KEY ERROR")
                     pass
             vectors[idx] = np.mean(word_vecs, axis=0)
+        # print("FUck me", vectors)
         return vectors
 
     def _cosine_sim(self, vecA, vecB):
@@ -513,6 +539,7 @@ def preprocess_data(df):
     df['Text'] = df['Text'].map(lambda x: clean_text(x, filters))
 
     ds = DocSim()
+    # print(ds.vectorize(df))
     return ds.vectorize(df)
 
 def train_model(model_type, data_type):
@@ -545,14 +572,21 @@ def inference_autoencoder(df):
     train_df = pd.read_csv("train_data.csv", index_col=False)
     train_vectors = preprocess_data(train_df)
 
+    #print("this is the real shirt")
     test_vectors = preprocess_data(df)
     # test_output = model.predict(test_vectors)
 
     # mse = lambda doc_idx: mean_squared_error(test_vectors[doc_idx], test_output[doc_idx])
     # mse_vals = list(map(mse, range(test_output.shape[0])))
+    # print(test_vectors)
+    
+    if np.isnan(test_vectors).all():
+        #print("none in dictionary")
+        similarities = np.array([0])
+    else:
+        similarities = cosine_similarity(train_vectors, test_vectors).mean(axis=0)
 
-    similarities = cosine_similarity(train_vectors, test_vectors).mean(axis=0)
-
+    # print(similarities.tolist())
     return similarities.tolist()
 
 
@@ -581,7 +615,7 @@ def model_inference(text):
 #endpoint that performs crawl
 @app.route('/scrape_and_save', methods = ["POST"])
 def scrape_and_save():
-    print('\n\n\nhit scrape\n\n\n')
+    # print('\n\n\nhit scrape\n\n\n')
 
     if request.method == 'OPTIONS':
     # Respond to preflight request
@@ -612,7 +646,7 @@ def scrape_and_save():
         if filename != '':
             # Process the file as needed (e.g., save it)
             uploaded_file.save(filename)
-            print(f"Saved file '{filename}'")
+            # print(f"Saved file '{filename}'")
 
             read_urls_from_file(uploaded_file.filename) 
 
@@ -620,16 +654,16 @@ def scrape_and_save():
 
             crawl_id = request.form['crawl_id']
 
-    print(f"starting length: {len(prio_heap)}")
+    # print(f"starting length: {len(prio_heap)}")
     # Begin to intergrate through the heap
-    while len(prio_heap) > 0 and page_count < userHardCount:
+    while len(prio_heap) > 0 and page_count < pageTotal:
         pop_scrape()
-        print(f"HEAP COUNT: {len(prio_heap)}")
-        print(count)
+        # print(f"HEAP COUNT: {len(prio_heap)}")
+        # print(count)
     run_to_db(request.form['username'], request.form['crawlname'], request.form['crawl_id'])
 
     #for testing
-    print(userHardCount)
+    # print(userHardCount)
     response_data = {
         "message": "recieved form data",
         "data": userHardCount
