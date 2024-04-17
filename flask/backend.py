@@ -179,8 +179,7 @@ def models():
         models = list(cursor)
         for document in models:
             document['_id'] = str(document['_id'])
-            
-        print(models)
+            # document['model'] = pickle.loads(document['model'])
         
         # Return crawl history data as JSON response
         return jsonify(models), 200
@@ -578,18 +577,18 @@ def clean_text(s, filters):
 
 def inference_autoencoder(df):
     global model
-    train_df = model
-    train_vectors = preprocess_data(train_df)
+    # # train_df = model
+    # train_vectors = preprocess_data(train_df)
 
     test_vectors = preprocess_data(df)
-    # test_output = model.predict(test_vectors)
+    test_output = model.predict(test_vectors)
 
-    # mse = lambda doc_idx: mean_squared_error(test_vectors[doc_idx], test_output[doc_idx])
-    # mse_vals = list(map(mse, range(test_output.shape[0])))
+    mse = lambda doc_idx: mean_squared_error(test_vectors[doc_idx], test_output[doc_idx])
+    mse_vals = list(map(mse, range(test_output.shape[0])))
 
-    similarities = cosine_similarity(train_vectors, test_vectors).mean(axis=0)
+    # similarities = cosine_similarity(train_vectors, test_vectors).mean(axis=0)
 
-    return similarities.tolist()
+    return mse_vals[0]
 
 
 def model_inference(text):
@@ -605,7 +604,7 @@ def model_inference(text):
     #         with zipfile.open(filename) as file:
     #             df, document_names = process_file(file, df, filename, document_names, data_type)
 
-    return inference_autoencoder(df)[0]
+    return inference_autoencoder(df)
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 #///////////////////////////////////// the wall 3 //////////////////////////////////////////////////////
@@ -616,7 +615,7 @@ def model_inference(text):
 @app.route('/scrape_and_save', methods = ["POST"])
 def scrape_and_save():
     print('\n\n\nhit scrape\n\n\n')
-
+    
     if request.method == 'OPTIONS':
     # Respond to preflight request
         # response = make_response()
@@ -632,7 +631,10 @@ def scrape_and_save():
     
     string_io = io.StringIO(str(request.form['model']))
     global model
-    model = pd.read_csv(string_io,  index_col=False)
+    df = pd.read_csv(string_io,  index_col=False)
+    train_vectors = preprocess_data(df)
+    model = MLPRegressor(hidden_layer_sizes=(600, 50, 600))
+    model.fit(train_vectors, train_vectors)
     global userHardCount
     userHardCount = int(request.form['urlTotal'])
     global urlThreshold
