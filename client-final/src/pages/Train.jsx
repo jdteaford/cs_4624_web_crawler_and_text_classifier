@@ -43,7 +43,7 @@ const Train = () => {
   const train = async (e) => {
 
     e.preventDefault();
-    const path = 'http://localhost:5000/train';
+    const path = 'http://127.0.0.1:5000/train';
     let formData = new FormData();
 
     formData.append("data", trainData[0]);

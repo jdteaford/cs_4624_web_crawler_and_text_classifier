@@ -187,7 +187,7 @@ const NewCrawl = () => {
         catch(error){
             spinner.classList.toggle('hide');
             //console.error('View error messages and try again:', error);
-            console.alert('View error messages and try again');
+            console.log('View error messages and try again');
         }
     }
 

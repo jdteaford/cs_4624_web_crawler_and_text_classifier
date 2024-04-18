@@ -50,9 +50,10 @@ wv = KeyedVectors.load('vectors.kv')
 
 
 app = Flask(__name__)
-#CORS(app)
+CORS(app)
 # CORS(app, origins='http://localhost:3000')
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+# CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+# CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 
 app.config['SECRET_KEY'] = 'professor_farag'
 jwt = JWTManager(app)
