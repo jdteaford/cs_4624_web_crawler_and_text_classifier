@@ -5,6 +5,7 @@ import HomeButton from '../components/HomeButton';
 import CrawlCard from '../components/CrawlCard';
 
 
+
 function CrawlHistory() {
     // const [crawlData, setCrawlData] = useState([]); 
     const [crawlData, setCrawlData] = useState(''); 

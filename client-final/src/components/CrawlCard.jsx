@@ -1,6 +1,7 @@
 import React from 'react';
 import DeleteButton from './DeleteButton';
 import './../stylesheets/crawlcard.css'; // Your CSS file for basic styling
+import { Link } from 'react-router-dom';
 
 const CrawlCard = ({ width, height, data }) => {
   // Create a style object that includes the passed width and height
@@ -24,6 +25,7 @@ const CrawlCard = ({ width, height, data }) => {
       <DeleteButton
         id={data['Crawl ID']}
       />
+      <button>Click to see details</button>
 
     </div>
   );
