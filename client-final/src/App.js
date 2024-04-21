@@ -11,6 +11,7 @@ import LoginPage from './pages/Login';
 import NewCrawl from './pages/NewCrawl';
 import CrawlHistory from './pages/CrawlHistory';
 import Train from './pages/Train';
+import CrawlDetails from './pages/CrawlDetails';
 
 // function ProtectedRoute({ children }) {
 //   const { isLoggedIn } = useAuth();
@@ -58,6 +59,7 @@ function App() {
         <Route path="/newcrawl" element={<PrivateRoute><NewCrawl /></PrivateRoute>}/>
         <Route path="/crawlhistory" element={<PrivateRoute><CrawlHistory /></PrivateRoute>}/>
         <Route path="/train" element = {<PrivateRoute><Train /></PrivateRoute>} />
+        <Route path="/details" element = {<PrivateRoute><CrawlDetails /></PrivateRoute>} />
       </Routes>
     </Router>
     </div>
