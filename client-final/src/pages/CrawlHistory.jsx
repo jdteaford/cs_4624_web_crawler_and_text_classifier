@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import logo from '../trans_web.png';
-import Card from '../components/Card';
 import Banner from '../components/Banner';
 import HomeButton from '../components/HomeButton';
+import CrawlCard from '../components/CrawlCard';
+
+
 
 function CrawlHistory() {
     // const [crawlData, setCrawlData] = useState([]); 
@@ -41,25 +43,15 @@ function CrawlHistory() {
         <div>
             <Banner imageUrl="logo">Web Crawler History</Banner>
             <HomeButton/>
-            {/* {crawlData.map((item, index) => (
+            {crawlData && JSON.parse(crawlData).map((item, index) => (
                 // Assuming `item` has properties `header` and `body` you want to display
-                <Card 
-                    key={index} 
-                    width="auto" 
+                <CrawlCard 
+                    key={index}
+                    width="100%" 
                     height="auto" 
-                    header={item.header} 
-                    body={item.body} 
+                    data={item}
                 />
-            ))} */}
-            <pre style={{
-                color: 'white',
-                textAlign: 'left', 
-                margin: '0 auto',
-                maxWidth: '80%', 
-                whiteSpace: 'pre-wrap', 
-                wordBreak: 'break-word' 
-            }}>
-                {crawlData}</pre>
+            ))}
         </div>
     );
 }
