@@ -42,6 +42,9 @@ from gensim.test.utils import lee_corpus_list
 from gensim.models import Word2Vec
 from bson.binary import Binary
 
+from datetime import timedelta
+
+
 model = Word2Vec(lee_corpus_list, vector_size=300, epochs=100)
 word_vectors = model.wv
 
@@ -122,7 +125,7 @@ def register():
     db.users.insert_one({"username": username, "password": hash, "email": email})
 
     # Generate JWT token
-    access_token = create_access_token(identity=username)
+    access_token = create_access_token(identity=username, expires_delta=timedelta(None))
     return jsonify(access_token=access_token), 201
 
 @app.route('/login', methods=['POST'])
