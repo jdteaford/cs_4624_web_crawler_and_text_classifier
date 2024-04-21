@@ -48,7 +48,6 @@ word_vectors = model.wv
 word_vectors.save('vectors.kv')
 wv = KeyedVectors.load('vectors.kv')
 
-
 app = Flask(__name__)
 #CORS(app)
 # CORS(app, origins='http://localhost:3000')
@@ -680,7 +679,6 @@ def scrape_and_save():
 
 def build_hierarchy(data):
     global hubs
-    
     # Create a dictionary to temporarily store items that couldn't be added initially
     parent_to_child = {}
 

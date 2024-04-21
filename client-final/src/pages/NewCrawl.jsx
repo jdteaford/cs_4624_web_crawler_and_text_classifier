@@ -71,32 +71,42 @@ const NewCrawl = () => {
     });
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-
-        fetch('http://127.0.0.1:5000/models', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}` // Include JWT token in the Authorization header
-        }
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error("not real")
-        }
-        return response.json();
-    }).then(data => {
-        const newArray = data.map(m=> {
-            return {
-            model_name: m.model_name,
-            model: m.model
-            };
-        });
-
-        setModelData(newArray);
-    })
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem('token');
+    
+                const response = await fetch('http://127.0.0.1:5000/models', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Include JWT token in the Authorization header
+                    }
+                });
+    
+                if (!response.ok) {
+                    throw new Error("Request failed");
+                }
+    
+                const data = await response.json();
+    
+                const newArray = data.map(m => ({
+                    model_name: m.model_name,
+                    model: m.model
+                }));
+    
+                setModelData(newArray);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                // Handle error if necessary
+            }
+        };
+    
+        fetchData();
     }, []);
 
     ///////////////MODAL STUFF//////////////////////////////////////////
     const toggleModal = () => {
+        setOption(modelData[0].model_name);
+        setModel(modelData[0].model);
         if(modalClass === "hidden"){
             setModalClass("show");
         }
@@ -228,8 +238,7 @@ const NewCrawl = () => {
         // Set the selected model object to the model state variable
         setOption(event.target.value);
         setModel(selectedModel.model);
-    
-        // You can access properties of the selected model object here
+
     }
     return (
     <>
@@ -305,9 +314,10 @@ const NewCrawl = () => {
                     {errors.pageHardCount && <div className="error">{errors.pageHardCount}</div>} {/* Error message */}
                 </div>
                 <select value={dropdownOption} onChange={e => handleModel(e)}>
-                    {modelData.map(m => 
+                    {modelData && modelData.length ? modelData.map(m => 
                         (<option key={m.model_name} value={m.model_name}>{m.model_name}
-                        </option>))}
+                        </option>)) :
+                        <></>}
                 </select>
                 <h3 className="modal__instructions">Done entering? Click the "Submit" to submit the constraints.</h3>
             </div>
