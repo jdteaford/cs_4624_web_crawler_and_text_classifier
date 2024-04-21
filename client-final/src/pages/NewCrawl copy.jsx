@@ -1,9 +1,11 @@
 import React, {useCallback, useState, useEffect} from 'react';
 import { useDropzone } from 'react-dropzone';
+//import CrawlCardHolder from '../components/CrawlCardHolder'
 import 'font-awesome/css/font-awesome.min.css';
+import 'rc-slider/assets/index.css'; // Import the default CSS styles
+//import axios, * as others from 'axios';
 import {jwtDecode} from 'jwt-decode';
-import logo from '../trans_web.png';
-import Banner from '../components/Banner';
+//import Banner from '../components/Banner';
 
 import uniqid from 'uniqid';
 
@@ -67,30 +69,30 @@ const NewCrawl = () => {
         },
     });
 
-    // useEffect(() => {
-    //     const token = localStorage.getItem('token');
+    useEffect(() => {
+        const token = localStorage.getItem('token');
 
-    //     fetch('http://127.0.0.1:5000/models', {
-    //     method: 'GET',
-    //     headers: {
-    //         'Authorization': `Bearer ${token}` // Include JWT token in the Authorization header
-    //     }
-    // }).then(response => {
-    //     if (!response.ok) {
-    //         throw new Error("not real")
-    //     }
-    //     return response.json();
-    // }).then(data => {
-    //     const newArray = data.map(m=> {
-    //         return {
-    //         model_name: m.model_name,
-    //         model: m.model
-    //         };
-    //     });
+        fetch('http://127.0.0.1:5000/models', {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}` // Include JWT token in the Authorization header
+        }
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error("not real")
+        }
+        return response.json();
+    }).then(data => {
+        const newArray = data.map(m=> {
+            return {
+            model_name: m.model_name,
+            model: m.model
+            };
+        });
 
-    //     setModelData(newArray);
-    // })
-    // }, []);
+        setModelData(newArray);
+    })
+    }, []);
 
     /////////////////HANDLE CONSTRAINTS FORM////////////////////
 
@@ -219,9 +221,85 @@ const NewCrawl = () => {
     }
     return (
     <>
-        <Banner imageUrl={logo}>Create New Crawl</Banner>
-        <div style={{ textAlign: 'center' }}>
-        <form onSubmit={sendPostRequest} style={{ display: 'inline-block' }}>
+        {/* <Banner /> */}
+        <button className="close__button" onClick={handleFormSubmit}>Submit</button>
+        <h1 className="modal__header">Change Crawl Constraints</h1>
+        <h3 className="modal__instructions">Edit the Parameters for the Crawl, maxes are 5000 URLs, 10 pages, and 1.0 for Tresholds. They will reset to their defaults in error.</h3>
+            <div className="constraint__wrapper">
+                <div className="user__hardcount--container">
+                    <label className="hardcount__label" htmlFor="text-input">
+                        <i className="fa fa-asterisk" aria-hidden="true"></i>
+                        Crawl Name: 
+                    </label>
+                    <input
+                        className="url__hardcount--input"
+                        type="text"
+                        id="text-input"
+                        value={crawlName}
+                        onChange={handleCrawlNameChange}
+                        required
+                    />
+                    {errors.crawlName && <div className="error">{errors.crawlName}</div>}
+                </div>
+                <div className="user__hardcount--container">
+                    <label className="hardcount__label" htmlFor="text-input">Max URLs Traversed: </label>
+                    <input
+                        className="url__hardcount--input"
+                        type="number"
+                        id="text-input"
+                        value={userHardCount}
+                        onChange={handleUserHardCountChange}
+                        max="5000"
+                    />
+                    {errors.userHardCount && <div className="error">{errors.userHardCount}</div>}
+                </div>
+                <div className="user__hardcount--container">
+                    <label className="hardcount__label" htmlFor="text-input">URL Score Threshold: </label>
+                    <input
+                        className="url__hardcount--input"
+                        type="number"
+                        id="text-input"
+                        value={urlThreshold}
+                        onChange={handleURLThresholdChange}
+                        max="1"
+                        step="0.01"
+                    />
+                    {errors.urlThreshold && <div className="error">{errors.urlThreshold}</div>} {/* Error message */}
+                </div>
+                <div className="user__hardcount--container">
+                    <label className="hardcount__label" htmlFor="text-input">Page Score Threshold:</label>
+                    <input
+                        className="url__hardcount--input"
+                        type="number"
+                        id="text-input"
+                        value={paraThreshold}
+                        onChange={handleParaThresholdChange}
+                        max="1"
+                        step="0.01"
+                    />
+                    {errors.paraThreshold && <div className="error">{errors.paraThreshold}</div>} {/* Error message */}
+                </div>
+                <div className="user__hardcount--container">
+                    <label className="hardcount__label" htmlFor="text-input">Max Pages Downloaded:</label>
+                    <input
+                        className="url__hardcount--input"
+                        type="number"
+                        id="text-input"
+                        value={pageHardCount}
+                        onChange={handlePageTotalChange}
+                        max="10"
+                    />
+                    {errors.pageHardCount && <div className="error">{errors.pageHardCount}</div>} {/* Error message */}
+                </div>
+                <select value={dropdownOption} onChange={e => handleModel(e)}>
+                    {modelData.map(m => 
+                        (<option key={m.model_name} value={m.model_name}>{m.model_name}
+                        </option>))}
+                </select>
+                <h3 className="modal__instructions">Done entering? Click the "Submit" to submit the constraints.</h3>
+            </div>
+        <div className="crawl__initializer--wrapper">
+            <div className="crawl__initializer--instructions">To Run a Crawl, First Provision a File</div>
             <div className="input__wrapper">
                 <div {...getRootProps()} className="dropzone">
                     <input className="file__dropper" {...getInputProps()} />
@@ -229,7 +307,7 @@ const NewCrawl = () => {
                         <p>Drop your file here.</p>
                     ) : (
                         <p>Drag & Drop File Here, or Click to Insert Directly.</p>
-                    )}
+                     )}
                 </div>
                 {selectedFile && (
                     <div className="file__holder">
@@ -237,67 +315,33 @@ const NewCrawl = () => {
                     </div>
                 )}
             </div>
-            <div>
-                <label htmlFor="text-input">
-                    <i className="fa fa-asterisk" aria-hidden="true"></i>
-                        Crawl Name: 
-                </label>
-                <input
-                    type="text"
-                    id="text-input"
-                    value={crawlName}
-                    onChange={handleCrawlNameChange}
-                    required
-                />
-                {errors.crawlName && <div className="error">{errors.crawlName}</div>}
+            <div className = "button__container">
+                {selectedFile != null ?
+                <button className="remove__file" onClick={removeFile}>
+                    Remove File
+                </button>
+                :
+                <></>
+                }
+                { selectedFile != null && userName?
+                    <button className="run__crawl"> 
+                        Set Constraints
+                    </button>
+                    :
+                    <></>
+                }
+                { selectedFile != null && userName && crawlName?
+                    <button className="run__crawl" onClick={sendPostRequest}>
+                        Run New Crawl
+                    </button>
+                    :
+                    <></>
+                }
             </div>
-            <div>
-                <label htmlFor="text-input">Max URLs Traversed: </label>
-                <input
-                    type="number"
-                    id="text-input"
-                        value={userHardCount}
-                        onChange={handleUserHardCountChange}
-                        max="5000"
-                />
-                {errors.userHardCount && <div className="error">{errors.userHardCount}</div>}
-            </div>
-            <div>
-                <label htmlFor="text-input">URL Score Threshold: </label>
-                <input
-                    type="number"
-                    id="text-input"
-                    value={urlThreshold}
-                    onChange={handleURLThresholdChange}
-                    max="1"
-                    step="0.01"
-                />
-                {errors.urlThreshold && <div className="error">{errors.urlThreshold}</div>} 
-            </div>
-            <div>
-                <label htmlFor="text-input">Page Score Threshold:</label>
-                <input
-                    type="number"
-                    id="text-input"
-                    value={paraThreshold}
-                    onChange={handleParaThresholdChange}
-                    max="1"
-                    step="0.01"
-                />
-                {errors.paraThreshold && <div className="error">{errors.paraThreshold}</div>} 
-            </div>
-            <div>
-                <label htmlFor="text-input">Max Pages Downloaded:</label>
-                <input
-                    type="number"
-                    id="text-input"
-                    value={pageHardCount}
-                    onChange={handlePageTotalChange}
-                    max="10"
-                />
-                {errors.pageHardCount && <div className="error">{errors.pageHardCount}</div>} 
-            </div>
-        </form>
+        </div>
+        <div className="spinner--wrapper hide" id="spinner--wrapper">
+            <div className="spinner"></div>
+            <h2 className="spinner__text">Running Crawl...</h2>
         </div>
     </>
 

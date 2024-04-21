@@ -122,7 +122,7 @@ def register():
     db.users.insert_one({"username": username, "password": hash, "email": email})
 
     # Generate JWT token
-    access_token = create_access_token(identity=username)
+    access_token = create_access_token(identity=username, expires_delta=None)
     return jsonify(access_token=access_token), 201
 
 @app.route('/login', methods=['POST'])
@@ -135,7 +135,7 @@ def login():
     print(user)
 
     if user and check_password_hash(user['password'], password):
-        access_token = create_access_token(identity=username)
+        access_token = create_access_token(identity=username, expires_delta=None)
         return jsonify(access_token=access_token), 200
     else:
         return jsonify({"error": "Invalid username or password"}), 401
