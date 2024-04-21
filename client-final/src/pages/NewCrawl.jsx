@@ -5,7 +5,8 @@ import 'font-awesome/css/font-awesome.min.css';
 import 'rc-slider/assets/index.css'; // Import the default CSS styles
 //import axios, * as others from 'axios';
 import {jwtDecode} from 'jwt-decode';
-//import Banner from '../components/Banner';
+import Banner from '../components/Banner';
+import HomeButton from '../components/HomeButton';
 
 import uniqid from 'uniqid';
 
@@ -197,7 +198,7 @@ const NewCrawl = () => {
         catch(error){
             spinner.classList.toggle('hide');
             //console.error('View error messages and try again:', error);
-            console.alert('View error messages and try again');
+            console.log('View error messages and try again');
         }
     }
 
@@ -242,8 +243,9 @@ const NewCrawl = () => {
     }
     return (
     <>
+        <Banner imageUrl="logo">Web Crawler History</Banner>
+        <HomeButton/>
         <div className={`modal__container ${modalClass}`}>
-        {/* <Banner /> */}
         <button className="close__button" onClick={handleFormSubmit}>Submit</button>
         <h1 className="modal__header">Change Crawl Constraints</h1>
         <h3 className="modal__instructions">Edit the Parameters for the Crawl, maxes are 5000 URLs, 10 pages, and 1.0 for Tresholds. They will reset to their defaults in error.</h3>

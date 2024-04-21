@@ -1,0 +1,17 @@
+.home-button {
+    background-color: rgba(255, 255, 255, 0.237);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    border: none;
+    border-style: solid;
+    border-width: 3px;
+}
+  
+.home-button-wrapper {
+position: absolute;
+top: 80px;
+left: 20px;
+}

@@ -5,6 +5,8 @@ import { Chart, CategoryScale, LinearScale, PointElement, LineElement, Title, To
 //import './Train.css'
 import '../stylesheets/train.css';
 import {jwtDecode} from 'jwt-decode';
+import Banner from '../components/Banner';
+import HomeButton from '../components/HomeButton';
 
 const Train = () => {
   const [trainData, setTrainData] = useState([]);
@@ -43,7 +45,7 @@ const Train = () => {
   const train = async (e) => {
 
     e.preventDefault();
-    const path = 'http://localhost:5000/train';
+    const path = 'http://127.0.0.1:5000/train';
     let formData = new FormData();
 
     formData.append("data", trainData[0]);
@@ -135,6 +137,8 @@ const Train = () => {
 
   return (
     <div className="main">
+      <Banner imageUrl="logo">Web Crawler History</Banner>
+      <HomeButton/>
       <div className="subpage_box">
         <div className="dot_holder">
           <div className="dot1" onClick={() => window.location.href = '/'}></div>
