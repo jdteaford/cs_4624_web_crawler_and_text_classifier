@@ -3,6 +3,7 @@ import { useParams} from 'react-router-dom';
 import Banner from '../components/Banner';
 import HomeButton from '../components/HomeButton';
 import '../stylesheets/crawldetails.css';
+import logo from '../trans_web.png';
 
 function CrawlDetails() {
     const { id } = useParams();
@@ -61,7 +62,7 @@ function CrawlDetails() {
     
   return (
     <div>
-        <Banner imageUrl="logo">Web Crawler History</Banner>
+        <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
         <HomeButton/>    
         {crawlData ? (
             <div>

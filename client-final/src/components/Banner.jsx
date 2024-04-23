@@ -96,7 +96,7 @@ function Banner({ imageUrl, children }) {
             }} />
             <span>{children}</span>
             <div>
-                <span style={{ marginRight: "10px" }}>{user}</span>
+                <span style={{ marginRight: "10px" }}><b>User: </b>{user}</span>
                 <LogoutButton />
             </div>
             {/* Display user information and logout button if user is logged in */}

@@ -7,7 +7,7 @@ import 'rc-slider/assets/index.css'; // Import the default CSS styles
 import {jwtDecode} from 'jwt-decode';
 import Banner from '../components/Banner';
 import HomeButton from '../components/HomeButton';
-
+import logo from '../trans_web.png';
 import uniqid from 'uniqid';
 
 
@@ -234,7 +234,7 @@ const NewCrawl = () => {
     }
     return (
     <>
-        <Banner imageUrl="logo">Web Crawler History</Banner>
+        <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
         <HomeButton/>
         <div className={`modal__container ${modalClass}`}>
         <button className="close__button" onClick={handleFormSubmit}>Submit</button>

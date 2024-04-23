@@ -41,7 +41,7 @@ function CrawlHistory() {
 
     return (
         <div>
-            <Banner imageUrl="logo">Web Crawler History</Banner>
+            <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
             <HomeButton/>
             {crawlData && JSON.parse(crawlData).map((item, index) => (
                 // Assuming `item` has properties `header` and `body` you want to display
