@@ -59,7 +59,7 @@ function App() {
         <Route path="/newcrawl" element={<PrivateRoute><NewCrawl /></PrivateRoute>}/>
         <Route path="/crawlhistory" element={<PrivateRoute><CrawlHistory /></PrivateRoute>}/>
         <Route path="/train" element = {<PrivateRoute><Train /></PrivateRoute>} />
-        <Route path="/details" element = {<PrivateRoute><CrawlDetails /></PrivateRoute>} />
+        <Route path="/details/:id" element = {<PrivateRoute><CrawlDetails /></PrivateRoute>} />
       </Routes>
     </Router>
     </div>

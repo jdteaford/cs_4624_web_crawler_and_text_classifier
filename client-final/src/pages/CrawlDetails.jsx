@@ -1,27 +1,61 @@
-import React from 'react';
+import React, {useEffect} from 'react';
+import { useParams} from 'react-router-dom';
+import Banner from '../components/Banner';
+import HomeButton from '../components/HomeButton';
+import '../stylesheets/crawldetails.css';
 
-function CrawlDetails(props) {
-    console.log("props:", props);
+function CrawlDetails() {
+  const { id } = useParams();
 
-    const state = props.state;
-    console.log("state:", state);
+  const requestBody = {
+    crawl_id: id
+  };
 
-    // Check if state is undefined or null
-    if (!state) {
-        console.log("No state found");
-        return <div>No data available</div>;
-    }
+  useEffect(() => {
+     // Retrieve JWT token from local storage
+    const token = localStorage.getItem('token');
 
-    // Access properties from the state object
-    const crawlID = state['Crawl ID'];
-    console.log("Crawl ID:", crawlID);
-
-    return (
-        <div>
-            <p>Crawl ID: {crawlID}</p>
-            {/* Display other data properties here as needed */}
+    fetch('http://127.0.0.1:5000/crawl_details', {  
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}` // Include JWT token in the Authorization header
+        },
+        body: JSON.stringify(requestBody)
+    })
+    .then(response => {
+        // Check if the response is successful
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        // Parse the JSON response
+        return response.json();
+    })
+    .then(data => {
+        // Process the JSON data
+        console.log(data);
+    })
+    .catch(error => {
+        // Handle errors
+        console.error('There was a problem with the fetch operation:', error);
+    });
+  }, [id]) //will execute the effect whenever id changes
+    
+  return (
+    <div>
+        <Banner imageUrl="logo">Web Crawler History</Banner>
+        <HomeButton/>
+        <h1>Collection: "{id}"</h1>
+        <div className="box">
+            <div className="row">Crawl ID</div>
+            <div className="row">Crawl Name</div>
+            <div className="row">Date Collected</div>
+            <div className="row">URLs</div>
+            <div className="row">Statistics</div>
+            <div className="row">Tree</div>
         </div>
-    );
+        {/* Display other data properties here as needed */}
+    </div>
+  );
 }
 
 export default CrawlDetails;

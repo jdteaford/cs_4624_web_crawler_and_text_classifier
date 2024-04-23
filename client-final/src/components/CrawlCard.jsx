@@ -32,7 +32,7 @@ const CrawlCard = ({ width, height, data }) => {
       <DeleteButton
         id={data['Crawl ID']}
       />
-      <Link to={{ pathname: '/details', state: id}}>
+      <Link to={`/details/${id}`}>
         <button>Click to see details</button>
       </Link>
       

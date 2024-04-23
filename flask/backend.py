@@ -176,6 +176,34 @@ def crawl_history():
     except Exception as e:
         # Handle any exceptions
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/crawl_details', methods=['POST'])
+def crawl_details():
+    if request.method == 'OPTIONS':
+        # Respond to preflight request
+        pass
+    print("hello")
+    try:
+        print('pls')
+        request_data = request.get_json()
+        print('here')
+        crawl_id = request_data['crawl_id']
+        print('here2')
+        print("crawl id is " + crawl_id)
+        #find relevant crawls
+        query = {"Crawl ID": crawl_id}
+        result  = db1.crawl_data.find_one(query)
+ 
+        if result:
+            return jsonify(result)
+        else:
+        # Return crawl history data as JSON response
+            return jsonify({"message": "Item not found"}), 404
+    
+    except Exception as e:
+        # Handle any exceptions
+        print('faillll')
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/models', methods=['GET'])
 @jwt_required()

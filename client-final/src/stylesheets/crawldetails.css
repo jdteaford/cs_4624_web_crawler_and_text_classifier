@@ -1,0 +1,14 @@
+.box {
+    border: 1px solid #000;
+    /* padding: 10px; */
+    background-color: #FF7F50;
+    width: 739px;
+    align-items: center;
+  }
+  
+.row {
+    padding: 25px;
+    border: 1px solid #000;
+    height: 25px;
+}
+
