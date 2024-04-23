@@ -84,6 +84,7 @@ const NewCrawl = () => {
                 });
     
                 if (!response.ok) {
+                    console.log(response.body)
                     throw new Error("Request failed");
                 }
     
@@ -91,7 +92,7 @@ const NewCrawl = () => {
     
                 const newArray = data.map(m => ({
                     model_name: m.model_name,
-                    model: m.model
+                    model: m["_id"]
                 }));
     
                 setModelData(newArray);
@@ -106,8 +107,8 @@ const NewCrawl = () => {
 
     ///////////////MODAL STUFF//////////////////////////////////////////
     const toggleModal = () => {
-        setOption(modelData[0].model_name);
-        setModel(modelData[0].model);
+        // setOption(modelData[0].model_name);
+        // setModel(modelData[0].model);
         if(modalClass === "hidden"){
             setModalClass("show");
         }
@@ -169,7 +170,6 @@ const NewCrawl = () => {
         try{
             const apiUrl = 'http://127.0.0.1:5000/scrape_and_save';
             formData.append('file', selectedFile);
-
             formData.append('urlTotal', userHardCount);
             formData.append('urlThreshold', urlThreshold);
             formData.append('paraThreshold', paraThreshold);
@@ -239,7 +239,7 @@ const NewCrawl = () => {
         // Set the selected model object to the model state variable
         setOption(event.target.value);
         setModel(selectedModel.model);
-
+        console.log(selectedModel.model)
     }
     return (
     <>

@@ -37,6 +37,7 @@ from requests_html import HTMLSession
 import requests
 from bs4 import BeautifulSoup
 from io import StringIO
+from bson import ObjectId
 
 from gensim.test.utils import lee_corpus_list
 from gensim.models import Word2Vec
@@ -53,7 +54,6 @@ CORS(app)
 # CORS(app, origins='http://localhost:3000')
 # CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 # CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
-
 app.config['SECRET_KEY'] = 'professor_farag'
 jwt = JWTManager(app)
 
@@ -80,7 +80,7 @@ def welcome():
         <title>real</title>
     </head>
     <body>
-        <h1>welcome to the back end</h1>
+        <h1>welcome to the back end (real)</h1>
         <img src="https://uproxx.com/wp-content/uploads/2023/06/Young-Thug-BET-Hip-Hop-Awards-2021-1024x437-1.jpeg?w=1024&h=437&crop=1" alt="Welcome Image">
     </body>
     </html>
@@ -139,8 +139,6 @@ def login():
     else:
         return jsonify({"error": "Invalid username or password"}), 401
 
-
-
 @app.route('/crawl_history', methods=['GET'])
 @jwt_required()
 def crawl_history():
@@ -180,6 +178,8 @@ def models():
         for document in models:
             document['_id'] = str(document['_id'])
             # document['model'] = pickle.loads(document['model'])
+            s = base64.b64encode(document["model"]).decode("ascii")
+            document["model"] = s
         
         # Return crawl history data as JSON response
         return jsonify(models), 200
@@ -194,9 +194,9 @@ def save_model():
     try:
         user_id = get_jwt_identity()
         print("USER ID IS" + user_id)
-        # pickle_model = request.files['pickleFile'].read()
+        pickle_model = request.files['pickleFile'].read()
         # models_db.models.insert_one({"username": user_id, "model": Binary(pickle_model), "model_name": str(request.form["model_name"]) })
-        models_db.models.insert_one({"username": user_id, "model": str(request.form["model"]), "model_name": str(request.form["model_name"]) })
+        models_db.models.insert_one({"username": user_id, "train_data": str(request.form["train_data"]), "model_name": str(request.form["model_name"]), "model": pickle_model })
         return jsonify({"message": "real"}), 200
     except Exception as e:
         # Handle any exceptions
@@ -624,17 +624,15 @@ def scrape_and_save():
         # response.headers.add('Access-Control-Allow-Methods', 'POST')
         # return response
         pass
-
     #variables for user hard count caps
-    
-    print(str(request.form['model']))
-    
-    string_io = io.StringIO(str(request.form['model']))
     global model
-    df = pd.read_csv(string_io,  index_col=False)
-    train_vectors = preprocess_data(df)
-    model = MLPRegressor(hidden_layer_sizes=(600, 50, 600))
-    model.fit(train_vectors, train_vectors)
+    object_id = ObjectId(str(request.form["model"]))
+    query = {"username": request.form["username"], "_id": object_id}
+    modelo  = models_db.models.find_one(query)
+    real = modelo["model"]
+    s = base64.b64decode(real)
+    model = pickle.loads(s)
+    print(model)
     global userHardCount
     userHardCount = int(request.form['urlTotal'])
     global urlThreshold

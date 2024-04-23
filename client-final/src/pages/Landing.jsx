@@ -4,12 +4,12 @@ import {jwtDecode} from 'jwt-decode';
 import { Link } from 'react-router-dom';
 import Banner from '../components/Banner';
 
-
 const styles = {
   h1: {
       color: 'white',
       // display: 'flex',
-      top: '70px', /* Adjust the distance from the y coordinate */
+      top: '100px', /* Adjust the distance from the y coordinate */
+      left: "475px", 
       // left: '20px',
       textAlign: 'center',
       // justifyContent: 'space-around',
