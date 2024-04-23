@@ -62,34 +62,37 @@ function CrawlDetails() {
   return (
     <div>
         <Banner imageUrl="logo">Web Crawler History</Banner>
-        <HomeButton/>
-        <h1>Collection: "{crawlData['Crawl Name']}"</h1>
+        <HomeButton/>    
         {crawlData ? (
-            <div className="box">
-                <div className="row"><b>Crawl ID: </b>{crawlData['Crawl ID']}</div>
-                <div className="row"><b>Crawl Name: </b>{crawlData['Crawl Name']}</div>
-                <div className="row"><b>Date Collected: </b>{crawlData['Collection Time']}</div>
-                {/* Download links for URLs, Statistics, and Tree */}
-                <div className="row-urls"><b>URLs: </b>
-                    <button onClick={() => handleDownloadJSON(crawlData['URLs'], 'urls.json')}>
-                        Download URLs as JSON
-                    </button>
-                </div>
-
-                <div className="row-stats"><b>Statistics: </b>
-                    <button onClick={() => handleDownloadJSON(crawlData['Stats'], 'statistics.json')}>
-                        Download Statistics as JSON
-                    </button>
-                </div>
-                <div className="row"><b>Tree: </b>
-                    {crawlData['Tree'] && (
-                        <button onClick={() => handleDownloadJSON(crawlData['Tree'], 'tree.json')}>
-                            Download Tree as JSON
+            <div>
+                <h1>Collection: "{crawlData['Crawl Name']}"</h1>
+                <div className="box">
+                    <div className="row"><b>Crawl ID: </b>{crawlData['Crawl ID']}</div>
+                    <div className="row"><b>Crawl Name: </b>{crawlData['Crawl Name']}</div>
+                    <div className="row"><b>Date Collected: </b>{crawlData['Collection Time']}</div>
+                    {/* Download links for URLs, Statistics, and Tree */}
+                    <div className="row-urls"><b>URLs: </b>
+                        <button onClick={() => handleDownloadJSON(crawlData['URLs'], 'urls.json')}>
+                            Download URLs as JSON
                         </button>
-                    )}
+                    </div>
 
-                </div>
+                    <div className="row-stats"><b>Statistics: </b>
+                        <button onClick={() => handleDownloadJSON(crawlData['Stats'], 'statistics.json')}>
+                            Download Statistics as JSON
+                        </button>
+                    </div>
+                    <div className="row"><b>Tree: </b>
+                        {crawlData['Tree'] && (
+                            <button onClick={() => handleDownloadJSON(crawlData['Tree'], 'tree.json')}>
+                                Download Tree as JSON
+                            </button>
+                        )}
+
+                    </div>
             </div>
+            </div>
+
         ) : (
             <p>Loading...</p>
         )}
