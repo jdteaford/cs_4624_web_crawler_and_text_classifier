@@ -193,11 +193,15 @@ def crawl_details():
         #find relevant crawls
         query = {"Crawl ID": crawl_id}
         result  = db1.crawl_data.find_one(query)
+        print('here3')
  
         if result:
+            print('here4')
+            result['_id'] = str(result['_id'])
             return jsonify(result)
         else:
         # Return crawl history data as JSON response
+            print('here5')
             return jsonify({"message": "Item not found"}), 404
     
     except Exception as e:
