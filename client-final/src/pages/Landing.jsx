@@ -38,7 +38,7 @@ function LandingPage() {
 
   return (
     <div>
-        <Banner imageUrl={logo}>Integrated Web App for Crisis Events Crawling</Banner>
+        <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
         <div >
 
           <h1 style={styles.h1}>Hello {user}, Please select an action</h1>

@@ -43,6 +43,9 @@ from gensim.test.utils import lee_corpus_list
 from gensim.models import Word2Vec
 from bson.binary import Binary
 
+from datetime import timedelta
+
+
 model = Word2Vec(lee_corpus_list, vector_size=300, epochs=100)
 word_vectors = model.wv
 
@@ -121,11 +124,20 @@ def register():
     db.users.insert_one({"username": username, "password": hash, "email": email})
 
     # Generate JWT token
-    access_token = create_access_token(identity=username)
+    access_token = create_access_token(identity=username, expires_delta=timedelta(None))
     return jsonify(access_token=access_token), 201
 
 @app.route('/login', methods=['POST'])
 def login():
+    #handle preflight request first
+    if request.method == 'OPTIONS':
+        print('hit')
+        # Respond to preflight request
+        response = app.make_default_options_response()
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+        response.headers['Access-Control-Allow-Methods'] = 'POST'
+        return response
+    
     user_info = request.json
     username = user_info['username']
     password = user_info['password']
@@ -160,6 +172,38 @@ def crawl_history():
     
     except Exception as e:
         # Handle any exceptions
+        return jsonify({"error": str(e)}), 500
+    
+@app.route('/crawl_details', methods=['POST'])
+def crawl_details():
+    if request.method == 'OPTIONS':
+        # Respond to preflight request
+        pass
+    print("hello")
+    try:
+        print('pls')
+        request_data = request.get_json()
+        print('here')
+        crawl_id = request_data['crawl_id']
+        print('here2')
+        print("crawl id is " + crawl_id)
+        #find relevant crawls
+        query = {"Crawl ID": crawl_id}
+        result  = db1.crawl_data.find_one(query)
+        print('here3')
+ 
+        if result:
+            print('here4')
+            result['_id'] = str(result['_id'])
+            return jsonify(result)
+        else:
+        # Return crawl history data as JSON response
+            print('here5')
+            return jsonify({"message": "Item not found"}), 404
+    
+    except Exception as e:
+        # Handle any exceptions
+        print('faillll')
         return jsonify({"error": str(e)}), 500
 
 @app.route('/models', methods=['GET'])
@@ -201,6 +245,25 @@ def save_model():
     except Exception as e:
         # Handle any exceptions
         return jsonify({"error": str(e)}), 500
+    
+@app.route('/delete_entry', methods=['POST'])
+def delete_entry():
+    if request.method == 'OPTIONS':
+        # Respond to preflight request
+        pass
+
+    request_json = request.get_json()  # Parse request body as JSON
+    if 'id' in request_json:
+        id_string = request_json['id']  # Get the ID string
+        print(id_string)
+        #find relevant crawl
+        query = {"Crawl ID": id_string}
+        result  = db1.crawl_data.delete_one(query)
+        return jsonify({"message": "hit", "acknowledged": result.acknowledged})
+
+    else:
+        print('No ID found in request body')
+        return jsonify({"message": "hit"})
 
 #////////////////////////////////////////////////////////////////////////////////////////////////////
 #///////////////////////////////////// the wall //////////////////////////////////////////////////////
