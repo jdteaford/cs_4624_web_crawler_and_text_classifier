@@ -12,10 +12,8 @@ const CrawlCard = ({ width, height, data }) => {
     width: width, // You can use just `width` if the property and value are the same
     height: height, // Same as above, could be simplified to `height`
   };
-  console.log(xtype(data));
   const id = data['Crawl ID'];
   console.log(id);
-  console.log(xtype(id));
 
   return (
     <div className="card-comp" style={cardStyle}>

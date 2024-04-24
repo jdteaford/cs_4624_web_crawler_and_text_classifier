@@ -9,6 +9,8 @@ import CrawlCard from '../components/CrawlCard';
 function CrawlHistory() {
     // const [crawlData, setCrawlData] = useState([]); 
     const [crawlData, setCrawlData] = useState(''); 
+    const [filteredData, setFilteredData] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         // Retrieve JWT token from local storage
@@ -31,6 +33,8 @@ function CrawlHistory() {
             // Update state with the fetched data
             // setCrawlData(data);
             setCrawlData(JSON.stringify(data, null, 2));
+
+            setFilteredData(data); // Initialize filteredData with all data
         })
         .catch(error => {
             // Handle errors
@@ -39,11 +43,25 @@ function CrawlHistory() {
         });
     }, []); // Empty dependency array means this effect runs once on mount
 
+    const handleSearch = (event) => {
+        const query = event.target.value.toLowerCase();
+        setSearchQuery(query);
+        const filtered = JSON.parse(crawlData).filter(item => item['Crawl Name'].toLowerCase().includes(query));
+        console.log('filtered is ' + filtered);
+        setFilteredData(filtered);
+    };
+
     return (
         <div>
             <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
             <HomeButton/>
-            {crawlData && JSON.parse(crawlData).map((item, index) => (
+            <input 
+                type="text" 
+                placeholder="Search by crawl name" 
+                value={searchQuery} 
+                onChange={handleSearch} 
+            />
+            {crawlData && filteredData.map((item, index) => (
                 // Assuming `item` has properties `header` and `body` you want to display
                 <CrawlCard 
                     key={index}
