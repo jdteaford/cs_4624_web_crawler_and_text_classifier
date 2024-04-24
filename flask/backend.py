@@ -42,7 +42,6 @@ from bson import ObjectId
 from gensim.test.utils import lee_corpus_list
 from gensim.models import Word2Vec
 from bson.binary import Binary
-
 from datetime import timedelta
 
 
@@ -54,11 +53,9 @@ wv = KeyedVectors.load('vectors.kv')
 
 app = Flask(__name__)
 CORS(app)
-# CORS(app, origins='http://localhost:3000')
-# CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
-# CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
 app.config['SECRET_KEY'] = 'professor_farag'
 jwt = JWTManager(app)
+expiration = timedelta(days=365)
 
 client = MongoClient('mongodb://localhost:27017/')
 db = client['users']
@@ -124,7 +121,7 @@ def register():
     db.users.insert_one({"username": username, "password": hash, "email": email})
 
     # Generate JWT token
-    access_token = create_access_token(identity=username, expires_delta=timedelta(None))
+     access_token = create_access_token(identity=username, expires_delta=expiration)
     return jsonify(access_token=access_token), 201
 
 @app.route('/login', methods=['POST'])
@@ -146,7 +143,7 @@ def login():
     print(user)
 
     if user and check_password_hash(user['password'], password):
-        access_token = create_access_token(identity=username)
+         access_token = create_access_token(identity=username, expires_delta=expiration)
         return jsonify(access_token=access_token), 200
     else:
         return jsonify({"error": "Invalid username or password"}), 401

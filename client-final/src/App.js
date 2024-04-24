@@ -24,7 +24,7 @@ const useStyles = createUseStyles({
     background: 'linear-gradient(to bottom right, #ff8d44, #833636, #660000)',
     height: '100vh',
     width: '100vw', 
-    position: 'absolute',
+    position: 'fixed',
     top: 0,
     left: 0,
     right: 0,
