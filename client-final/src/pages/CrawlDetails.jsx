@@ -1,18 +1,63 @@
 import React, {useEffect, useState} from 'react';
-import { useParams} from 'react-router-dom';
+import { json, useParams} from 'react-router-dom';
 import Banner from '../components/Banner';
 import HomeButton from '../components/HomeButton';
 import '../stylesheets/crawldetails.css';
 import logo from '../trans_web.png';
 
+import { BarChart } from "@mui/x-charts"
+
+import xtype from 'xtypejs';
+
 function CrawlDetails() {
     const { id } = useParams();
 
     const [crawlData, setCrawlData] = useState(null);
+    const [stats, setStats] = useState(null);
+    const [jsonStats, setJsonStats] = useState(null);
+    const [websites, setWebsites] = useState(null);
 
     const requestBody = {
         crawl_id: id
     };
+
+                
+    // setStats(crawlData['Stats']);
+    // console.log('stats!!');
+    // //console.log(stats == null);
+
+    // setJsonStats(JSON.parse(stats));
+    // // console.log('json');
+    // console.log(jsonStats)
+    // setWebsites(Object.keys(jsonStats));
+    // console.log(websites);
+    useEffect(() => {
+        if (crawlData) {
+            const statsData = crawlData['Stats'];
+            if (statsData) {
+                setStats(statsData);
+            }
+        }
+    }, [crawlData]);
+
+    useEffect(() => {
+        if (stats) {
+            try {
+                const parsedStats = JSON.parse(stats);
+                setJsonStats(parsedStats);
+            } catch (error) {
+                console.error('Error parsing JSON stats:', error);
+            }
+        }
+    }, [stats]);
+
+
+    useEffect(() => {
+        if (jsonStats) {
+            const websites = Object.keys(jsonStats);
+            setWebsites(websites);
+        }
+    }, [jsonStats]);
 
     useEffect(() => {
      // Retrieve JWT token from local storage
@@ -89,9 +134,37 @@ function CrawlDetails() {
                                 Download Tree as JSON
                             </button>
                         )}
-
                     </div>
-            </div>
+                    {websites && websites.length > 0 && jsonStats && (
+                        <div className="bar-chart">
+                            <b>Average Scores of Domains: </b>
+                            <BarChart
+                                xAxis={[
+                                    {
+                                        id: 'barCategories',
+                                        data: websites,
+                                        scaleType: 'band',
+                                        label: 'Domains'
+                                    },
+                                ]}
+                                yAxis={[
+                                    {
+                                        id: 'barData',
+                                        label: 'Average Score'
+                                    }
+                                ]}
+                                series={[
+                                    {
+                                        data: websites.map(website => jsonStats[website].avg_score),
+                                    },
+                                ]}
+                                width={500}
+                                height={500}
+                            />
+                        </div>
+                    )}
+                </div>
+                
             </div>
 
         ) : (
