@@ -659,7 +659,7 @@ def model_inference(text):
         # pickle_string = f.read()
         # pickle_bytes = base64.b64decode(pickle_string)
         # model = pickle.loads(pickle_bytes)
-
+    print(text)
     df = pd.DataFrame([text] ,columns=['Text'])
 
     # with ZipFile('data') as zipfile:

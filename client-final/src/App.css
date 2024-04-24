@@ -253,6 +253,12 @@ MODAL CSS
   position: absolute;
   right: 120px;
 }
+.url__hardcount--dropdown{
+  height: 40px;
+  position: absolute;
+  right: 120px;
+  width: 190px;
+}
 .hidden{
   opacity: 0;
   z-index: -100;

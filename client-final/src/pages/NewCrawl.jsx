@@ -315,12 +315,19 @@ const NewCrawl = () => {
                     />
                     {errors.pageHardCount && <div className="error">{errors.pageHardCount}</div>} {/* Error message */}
                 </div>
-                <select value={dropdownOption} onChange={e => handleModel(e)}>
-                    {modelData && modelData.length ? modelData.map(m => 
-                        (<option key={m.model_name} value={m.model_name}>{m.model_name}
-                        </option>)) :
-                        <></>}
-                </select>
+                <div className='user__hardcount--container'>
+                    <label className="hardcount__label" htmlFor="dropdown">Select Model:</label>
+                    <select value={dropdownOption} 
+                    onChange={e => handleModel(e)}
+                    id="dropdown"
+                    className='url__hardcount--dropdown'
+                    >
+                        {modelData && modelData.length ? modelData.map(m => 
+                            (<option key={m.model_name} value={m.model_name}>{m.model_name}
+                            </option>)) :
+                            <></>}
+                    </select>
+                </div>
                 <h3 className="modal__instructions">Done entering? Click the "Submit" to submit the constraints.</h3>
             </div>
       </div>

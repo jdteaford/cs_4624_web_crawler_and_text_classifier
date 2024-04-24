@@ -101,11 +101,6 @@ const Train = () => {
       const data = await response.json();
       console.log("Res.data[1]: ", data);
       const blob = new Blob([data[1]]);
-      // const link = document.createElement('a');
-      // link.href = URL.createObjectURL(blob);
-      // link.download = 'model.pickle';
-      // link.click();
-      // URL.revokeObjectURL(link.href);
       const pickleModel = new FormData();
       pickleModel.append('pickleFile', blob, "model.pickle");
       pickleModel.append('model_name',  model_name);
@@ -158,27 +153,6 @@ const Train = () => {
               <p className="label">Upload Train Data</p>
               <p className="upload_type"><input type="file" onChange={e => updateTrainData(e)} multiple /></p>
             </div>
-            {/* <div className="align-horizontal">
-              <p className="label">Train Model Type</p>
-              <p className="upload_type">
-                <select value={trainModelType} onChange={(e) => setTrainModelType(e.target.value)}>
-                  <option></option>
-                  <option value='svm'>One-class SVM</option>
-                  <option value='ae'>Autoencoder</option>
-                </select>
-              </p>
-            </div>
-            <div className="align-horizontal">
-              <p className="label">Train Data Type</p>
-              <p className="upload_type">
-                <select value={trainDataType} onChange={(e) => setTrainDataType(e.target.value)}>
-                  <option></option>
-                  <option value='urls'>Zipfile of URLs</option>
-                  <option value='html'>Zipfile of HTML</option>
-                  <option value='txt'>Zipfile of .txt files</option>
-                </select>
-              </p>
-            </div> */}
             <div className="align-horizontal">
               <p className="align-center"><button type="button" onClick={e => train(e)}>Perform Training</button></p>
             </div>
