@@ -7,8 +7,6 @@ import logo from '../trans_web.png';
 
 import { BarChart } from "@mui/x-charts"
 
-import xtype from 'xtypejs';
-
 function CrawlDetails() {
     const { id } = useParams();
 
@@ -21,16 +19,6 @@ function CrawlDetails() {
         crawl_id: id
     };
 
-                
-    // setStats(crawlData['Stats']);
-    // console.log('stats!!');
-    // //console.log(stats == null);
-
-    // setJsonStats(JSON.parse(stats));
-    // // console.log('json');
-    // console.log(jsonStats)
-    // setWebsites(Object.keys(jsonStats));
-    // console.log(websites);
     useEffect(() => {
         if (crawlData) {
             const statsData = crawlData['Stats'];
@@ -177,24 +165,3 @@ function CrawlDetails() {
 }
 
 export default CrawlDetails;
-
-
-// import React from 'react';
-
-// const CrawlDetails = (props) => {
-//     console.log('here');
-//     console.log("props are");
-//     console.log(props);
-//   // Access the data passed from the previous component
-//     const { id } = props.location.state;
-
-//     // Now you can use the id to fetch additional details or display information
-//     return (
-//     <div>
-//         <h2>Details for Crawl ID: {id}</h2>
-//         {/* You can render additional details or fetch more data based on the id */}
-//     </div>
-//     );
-//     };
-
-//     export default CrawlDetails;
