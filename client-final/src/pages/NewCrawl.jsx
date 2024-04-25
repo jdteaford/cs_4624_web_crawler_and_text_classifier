@@ -1,5 +1,6 @@
 import React, {useCallback, useState, useEffect} from 'react';
 import { useDropzone } from 'react-dropzone';
+import { Input } from '@chakra-ui/react'
 //import CrawlCardHolder from '../components/CrawlCardHolder'
 import 'font-awesome/css/font-awesome.min.css';
 import 'rc-slider/assets/index.css'; // Import the default CSS styles
@@ -20,7 +21,7 @@ const NewCrawl = () => {
     const [modalClass, setModalClass] = useState("hidden");
 
     const [userHardCount, setUserHardCount] = useState(1000); //hard counts for server side data.
-    const [urlThreshold, setUrlThreshold] = useState(0.2);
+    const [urlThreshold, setUrlThreshold] = useState(0.1);
     const [paraThreshold, setParaThreshold] = useState(0.5);
     const [pageHardCount, setPageHardCount] = useState(5);
 
@@ -29,6 +30,7 @@ const NewCrawl = () => {
     const [modelData, setModelData] = useState([]);
     const [model, setModel] = useState("")
     const [dropdownOption, setOption] = useState("");
+    const [completeCrawlFlag, setFlag] = useState(false);
 
     let formData = new FormData();
     const [data, setData] = useState([{
@@ -193,6 +195,7 @@ const NewCrawl = () => {
             console.log(response.data);
             requestCompleteFlag = response;
             spinner.classList.toggle('hide');
+            setFlag(true);
             //sendGetRequest(userName);
         }
         catch(error){
@@ -245,6 +248,8 @@ const NewCrawl = () => {
     <>
         <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
         <HomeButton/>
+        { !completeCrawlFlag  ? ( 
+        <>
         <div className={`modal__container ${modalClass}`}>
         <button className="close__button" onClick={handleFormSubmit}>Submit</button>
         <h1 className="modal__header">Change Crawl Constraints</h1>
@@ -376,6 +381,17 @@ const NewCrawl = () => {
             <div className="spinner"></div>
             <h2 className="spinner__text">Running Crawl...</h2>
         </div>
+        </>) : 
+        (
+            <div>
+                    <h1 className='success_header'>Success!</h1>
+                    <img className='checkmark' src="https://www.pngall.com/wp-content/uploads/8/Check-Mark-PNG-File.png"/>
+                    <p>
+                        You can check the results of the crawl in the Crawl History page.
+                    </p>
+            </div>
+        ) }
+       
     </>
 
     );

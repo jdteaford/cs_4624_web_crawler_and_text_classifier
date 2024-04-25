@@ -7,6 +7,7 @@ import '../stylesheets/train.css';
 import {jwtDecode} from 'jwt-decode';
 import Banner from '../components/Banner';
 import HomeButton from '../components/HomeButton';
+import  {Input }  from '@chakra-ui/react';
 
 const Train = () => {
   const [trainData, setTrainData] = useState([]);
@@ -129,7 +130,6 @@ const Train = () => {
       console.error('There was a problem with the fetch operation:', error);
     }
   };
-
   return (
     <div className="main">
       <Banner imageUrl="logo">Web Crawler History</Banner>
@@ -146,6 +146,7 @@ const Train = () => {
         <div className='align-horizontal'>
             <p className='label'>Model Name</p>
             <p className='upload_type'><input type="text" onChange={e => handleModelName(e)} /></p>
+            {/* <Input size="sm" onChange={e => handleModelName(e)} /> */}
         </div>
         <form className="main_form">
           <div className="content-left">

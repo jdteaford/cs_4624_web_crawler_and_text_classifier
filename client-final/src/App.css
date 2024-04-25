@@ -331,3 +331,15 @@ Spinner stuff
   flex-direction: column;
   align-items: center;
 }
+
+.success_header {
+  text-align: center;
+}
+
+.checkmark {
+  height: 128px;
+  width: 119px;
+ display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
