@@ -7,7 +7,7 @@ import '../stylesheets/train.css';
 import {jwtDecode} from 'jwt-decode';
 import Banner from '../components/Banner';
 import HomeButton from '../components/HomeButton';
-import  {Input }  from '@chakra-ui/react';
+// import  {Input }  from '@chakra-ui/react';
 
 const Train = () => {
   const [trainData, setTrainData] = useState([]);
@@ -134,28 +134,28 @@ const Train = () => {
     <div className="main">
       <Banner imageUrl="logo">Web Crawler History</Banner>
       <HomeButton/>
-      <div className="subpage_box">
+      <div className="card" style={{ textAlign: 'center'}}>
         <div className="dot_holder">
           <div className="dot1" onClick={() => window.location.href = '/'}></div>
           <div className="dot2"></div>
           <div className="dot3"></div>
         </div>
-        <div className="title">
-          <h2 id="titletrain">Perform Training</h2>
+        <div>
+          <h1>Perform Training</h1>
         </div>
-        <div className='align-horizontal'>
-            <p className='label'>Model Name</p>
-            <p className='upload_type'><input type="text" onChange={e => handleModelName(e)} /></p>
+        <div>
+            <p>Model Name</p>
+            <p><input type="text" onChange={e => handleModelName(e)} /></p>
             {/* <Input size="sm" onChange={e => handleModelName(e)} /> */}
         </div>
-        <form className="main_form">
-          <div className="content-left">
-            <div className="align-horizontal">
-              <p className="label">Upload Train Data</p>
+        <form>
+          <div>
+            <div>
+              <p>Upload Train Data</p>
               <p className="upload_type"><input type="file" onChange={e => updateTrainData(e)} multiple /></p>
             </div>
-            <div className="align-horizontal">
-              <p className="align-center"><button type="button" onClick={e => train(e)}>Perform Training</button></p>
+            <div>
+              <p><button type="button" onClick={e => train(e)}>Perform Training</button></p>
             </div>
           </div>
         </form>

@@ -2,7 +2,6 @@ import React from 'react';
 import DeleteButton from './DeleteButton';
 import './../stylesheets/crawlcard.css'; // Your CSS file for basic styling
 import { Link } from 'react-router-dom';
-import xtype from 'xtypejs';
 import CrawlDetails from '../pages/CrawlDetails';
 
 const CrawlCard = ({ width, height, data }) => {
@@ -11,6 +10,8 @@ const CrawlCard = ({ width, height, data }) => {
   const cardStyle = {
     width: width, // You can use just `width` if the property and value are the same
     height: height, // Same as above, could be simplified to `height`
+    backgroundColor: "#cb9282",
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
   };
   const id = data['Crawl ID'];
   console.log(id);

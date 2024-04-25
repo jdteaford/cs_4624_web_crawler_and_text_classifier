@@ -89,7 +89,7 @@ html{
 .card h1 {
   max-width: 80%;
   text-align: center;
-  color: #222725;
+  color: #050000;
 
 }
 
@@ -307,7 +307,7 @@ Spinner stuff
 
 /* Test for the new card component */
 .card-comp {
-  background-color: #cb9282;
+  /* background-color: #cb9282; */
   /* position: relative; */
   /* display: flex; */
   /* flex-direction: column; */
@@ -315,7 +315,7 @@ Spinner stuff
   /* align-items: center; */
   border-radius: 15px;
   padding: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
   overflow: auto;
   /* Width and height will be controlled via props */
 }
@@ -336,10 +336,15 @@ Spinner stuff
   text-align: center;
 }
 
-.checkmark {
-  height: 128px;
-  width: 119px;
- display: block;
-  margin-left: auto;
-  margin-right: auto;
+.option_button {
+  width: 30vw; /* 30% of the viewport width */
+  height: 30vh; /* 30% of the viewport height */
+  margin: 10px; /* Spacing between buttons */
+  background-color: #bf4342; /* Blue background for a vibrant look */
+  color: white; /* White text color for contrast */
+  border: none; /* No border */
+  border-radius: 8px; /* Rounded corners */
+  font-size: 1.5rem; /* Larger text for readability */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition for hover effect */
 }

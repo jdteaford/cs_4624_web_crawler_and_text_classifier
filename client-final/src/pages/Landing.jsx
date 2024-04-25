@@ -11,7 +11,7 @@ const styles = {
       top: '100px', /* Adjust the distance from the y coordinate */
       left: "475px", 
       // left: '20px',
-      textAlign: 'center',
+      // textAlign: 'center',
       // justifyContent: 'space-around',
       // alignItems: 'center',
       // width: '100vw',
@@ -39,18 +39,16 @@ function LandingPage() {
   return (
     <div>
         <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
-        <div >
-
-          <h1 style={styles.h1}>Hello {user}, Please select an action</h1>
+        <div style={{ textAlign: 'center' }}>
           
           <Link to="/newcrawl">
-            <button type="new crawl">+ Create New Crawl</button>
+            <button className='option_button' type="new crawl">+ Create New Crawl</button>
           </Link>
           <Link to="/crawlhistory">
-            <button type = "crawl history">View Crawl History</button>
+            <button className='option_button' type = "crawl history">View Crawl History</button>
           </Link>
           <Link to="/train">
-            <button type = "train model">+ Train Model</button>
+            <button className='option_button' type = "train model">+ Train Model</button>
           </Link>
         </div>
     </div>

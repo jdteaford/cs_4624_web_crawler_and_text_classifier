@@ -1,6 +1,6 @@
 import React, {useCallback, useState, useEffect} from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Input } from '@chakra-ui/react'
+// import { Input } from '@chakra-ui/react'
 //import CrawlCardHolder from '../components/CrawlCardHolder'
 import 'font-awesome/css/font-awesome.min.css';
 import 'rc-slider/assets/index.css'; // Import the default CSS styles
@@ -10,6 +10,7 @@ import Banner from '../components/Banner';
 import HomeButton from '../components/HomeButton';
 import logo from '../trans_web.png';
 import uniqid from 'uniqid';
+import { Link } from 'react-router-dom';
 
 
 const NewCrawl = () => {
@@ -383,11 +384,15 @@ const NewCrawl = () => {
         </div>
         </>) : 
         (
-            <div>
+            <div className='card' style={{ textAlign: 'center' }}>
                     <h1 className='success_header'>Success!</h1>
-                    <img className='checkmark' src="https://www.pngall.com/wp-content/uploads/8/Check-Mark-PNG-File.png"/>
+                    {/* <img className='checkmark' src="https://www.pngall.com/wp-content/uploads/8/Check-Mark-PNG-File.png"/> */}
                     <p>
                         You can check the results of the crawl in the Crawl History page.
+                        <br/> <br/>
+                        <Link to="/crawlhistory">
+                            <button type = "crawl history">View Crawl History</button>
+                        </Link>
                     </p>
             </div>
         ) }
