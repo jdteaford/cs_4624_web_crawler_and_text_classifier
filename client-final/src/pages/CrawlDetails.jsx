@@ -4,8 +4,9 @@ import Banner from '../components/Banner';
 import HomeButton from '../components/HomeButton';
 import '../stylesheets/crawldetails.css';
 import logo from '../trans_web.png';
+import { BarChart } from "@mui/x-charts";
 
-import { BarChart } from "@mui/x-charts"
+import { Tree } from 'react-d3-tree';
 
 function CrawlDetails() {
     const { id } = useParams();
@@ -92,76 +93,78 @@ function CrawlDetails() {
         a.click();
         document.body.removeChild(a);
     };
-    
-  return (
-    <div>
-        <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
-        <HomeButton/>    
-        {crawlData ? (
-            <div>
-                <h1>Collection: "{crawlData['Crawl Name']}"</h1>
-                <div className="box">
-                    <div className="row"><b>Crawl ID: </b>{crawlData['Crawl ID']}</div>
-                    <div className="row"><b>Crawl Name: </b>{crawlData['Crawl Name']}</div>
-                    <div className="row"><b>Date Collected: </b>{crawlData['Collection Time']}</div>
-                    {/* Download links for URLs, Statistics, and Tree */}
-                    <div className="row-urls"><b>URLs: </b>
-                        <button onClick={() => handleDownloadJSON(crawlData['URLs'], 'urls.json')}>
-                            Download URLs as JSON
-                        </button>
-                    </div>
 
-                    <div className="row-stats"><b>Statistics: </b>
-                        <button onClick={() => handleDownloadJSON(crawlData['Stats'], 'statistics.json')}>
-                            Download Statistics as JSON
-                        </button>
-                    </div>
-                    <div className="row"><b>Tree: </b>
-                        {crawlData['Tree'] && (
-                            <button onClick={() => handleDownloadJSON(crawlData['Tree'], 'tree.json')}>
-                                Download Tree as JSON
-                            </button>
-                        )}
-                    </div>
-                    {websites && websites.length > 0 && jsonStats && (
-                        <div className="bar-chart">
-                            <b>Average Scores of Domains: </b>
-                            <BarChart
-                                xAxis={[
-                                    {
-                                        id: 'barCategories',
-                                        data: websites,
-                                        scaleType: 'band',
-                                        label: 'Domains'
-                                    },
-                                ]}
-                                yAxis={[
-                                    {
-                                        id: 'barData',
-                                        label: 'Average Score'
-                                    }
-                                ]}
-                                series={[
-                                    {
-                                        data: websites.map(website => jsonStats[website].avg_score),
-                                    },
-                                ]}
-                                width={500}
-                                height={500}
-                            />
-                        </div>
+    return (
+        <div>
+          <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
+          <HomeButton/>    
+          {crawlData ? (
+            <div>
+              <h1>Collection: "{crawlData['Crawl Name']}"</h1>
+              <div className="box">
+                <div className="row"><b>Crawl ID: </b>{crawlData['Crawl ID']}</div>
+                <div className="row"><b>Crawl Name: </b>{crawlData['Crawl Name']}</div>
+                <div className="row"><b>Date Collected: </b>{crawlData['Collection Time']}</div>
+                {/* Download links for URLs, Statistics, and Tree */}
+                <div className="row-urls"><b>URLs: </b>
+                  <button onClick={() => handleDownloadJSON(crawlData['URLs'], 'urls.json')}>
+                    Download URLs as JSON
+                  </button>
+                </div>
+      
+                <div className="row-stats"><b>Statistics: </b>
+                  <button onClick={() => handleDownloadJSON(crawlData['Stats'], 'statistics.json')}>
+                    Download Statistics as JSON
+                  </button>
+                </div>
+                <div className="tree-container">
+                    
+                    {crawlData['URLs'] && (
+                        <Tree 
+                            data={crawlData['URLs']} 
+                            separation={{ siblings: 1, nonSiblings: 2 }} 
+                            orientation="vertical" 
+                            style={{ width: '100%' }} />
                     )}
                 </div>
-                
-            </div>
 
-        ) : (
+                {websites && websites.length > 0 && jsonStats && (
+                  <div className="bar-chart">
+                    <b>Average Scores of Domains: </b>
+                    <BarChart
+                      xAxis={[
+                        {
+                          id: 'barCategories',
+                          data: websites,
+                          scaleType: 'band',
+                          label: 'Domains'
+                        },
+                      ]}
+                      yAxis={[
+                        {
+                          id: 'barData',
+                          label: 'Average Score'
+                        }
+                      ]}
+                      series={[
+                        {
+                          data: websites.map(website => jsonStats[website].avg_score),
+                        },
+                      ]}
+                      width={500}
+                      height={500}
+                    />
+                  </div>
+                )}
+              </div>
+                      
+            </div>
+          ) : (
             <p>Loading...</p>
-        )}
-       
-        {/* Display other data properties here as needed */}
-    </div>
-  );
+          )}
+          {/* Display other data properties here as needed */}
+        </div>  
+      );
 }
 
 export default CrawlDetails;
