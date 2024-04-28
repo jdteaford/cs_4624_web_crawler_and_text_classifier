@@ -31,6 +31,17 @@
     height: 50px;
 }
 
+.tree-container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px;
+    border: 1px solid #000;
+    height: 500px;
+    /* width: 100% */
+}
+
+
 .row button {
     margin-left: 10px; /* Add some space between text and button */
 }
