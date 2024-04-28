@@ -412,8 +412,11 @@ def pop_scrape():
                 text = ""
                 for paragraph in soup.find_all('p'):
                     text += paragraph.get_text() + "\n"
-            
-                hold_para_score = model_inference(text)
+
+                if (text != ""):
+                    hold_para_score = model_inference(text)
+                else:
+                    hold_para_score = 0
                
                 # Download current URL's HTML file to Firebase Storage
                 global page_count, pageDownloadTotal

@@ -63,6 +63,8 @@ const NewCrawl = () => {
         setSelectedFile(acceptedFiles[0]);
     }, []);
 
+    
+
     const removeFile = () => {
         setSelectedFile(null);
     };
@@ -97,8 +99,10 @@ const NewCrawl = () => {
                     model_name: m.model_name,
                     model: m["_id"]
                 }));
-                
+                console.log(newArray);
                 setModelData(newArray);
+                setModel(newArray[0].model);
+                setOption(newArray[0].model_name);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 // Handle error if necessary
@@ -106,12 +110,10 @@ const NewCrawl = () => {
         };
     
         fetchData();
-    }, []);
+    }, [3]);
 
     ///////////////MODAL STUFF//////////////////////////////////////////
     const toggleModal = () => {
-        // setOption(modelData[0].model_name);
-        // setModel(modelData[0].model);
         if(modalClass === "hidden"){
             setModalClass("show");
         }
@@ -132,7 +134,8 @@ const NewCrawl = () => {
     });
 
     const handleFormSubmit = async () => {
-        console.log(model)
+        console.log(model);
+        console.log(dropdownOption);
         console.log(userHardCount);
         console.log(urlThreshold);
         console.log(errors);
@@ -152,6 +155,11 @@ const NewCrawl = () => {
         }
         if (pageHardCount > 10) {
             setErrors({ ...errors, pageHardCount: "Max Pages Downloaded cannot exceed 10" });
+        }
+        if (model === '' && dropdownOption === '') {
+            setOption(modelData[0].model_name);
+            setModel(modelData[0].model);
+            console.log(model);
         }
         if ((crawlName || crawlName.trim() !== "") && userHardCount <= 5000 && urlThreshold <= 1 && paraThreshold <= 1 && pageHardCount <= 10){
                // If all validations pass, proceed with form submission
