@@ -40,15 +40,14 @@ function LandingPage() {
     <div>
         <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
         <div style={{ textAlign: 'center' }}>
-          
+          <Link to="/train">
+            <button className='option_button' type = "train model">+ Train Model</button>
+          </Link>
           <Link to="/newcrawl">
             <button className='option_button' type="new crawl">+ Create New Crawl</button>
           </Link>
           <Link to="/crawlhistory">
             <button className='option_button' type = "crawl history">View Crawl History</button>
-          </Link>
-          <Link to="/train">
-            <button className='option_button' type = "train model">+ Train Model</button>
           </Link>
         </div>
     </div>

@@ -45,8 +45,6 @@ function CrawlHistory() {
         <div>
             <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
             <HomeButton/>
-            <br />
-            <br />
             <input 
                 type="text" 
                 placeholder="Search by crawl name" 

@@ -98,7 +98,7 @@ function CrawlDetails() {
         <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
         <HomeButton/>    
         {crawlData ? (
-            <div>
+            <div style={{marginTop:"500px"}}>
                 <h1>Collection: "{crawlData['Crawl Name']}"</h1>
                 <div className="box">
                     <div className="row"><b>Crawl ID: </b>{crawlData['Crawl ID']}</div>
