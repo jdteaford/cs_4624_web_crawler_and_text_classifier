@@ -7,6 +7,7 @@ import '../stylesheets/train.css';
 import {jwtDecode} from 'jwt-decode';
 import Banner from '../components/Banner';
 import HomeButton from '../components/HomeButton';
+import logo from '../trans_web.png';
 // import  {Input }  from '@chakra-ui/react';
 
 const Train = () => {
@@ -132,7 +133,7 @@ const Train = () => {
   };
   return (
     <div className="main">
-      <Banner imageUrl="logo">Web Crawler History</Banner>
+       <Banner imageUrl={logo}><b>Integrated Web App for Crisis Events Crawling</b></Banner>
       <HomeButton/>
       <div className="card" style={{ textAlign: 'center'}}>
         <div className="dot_holder">

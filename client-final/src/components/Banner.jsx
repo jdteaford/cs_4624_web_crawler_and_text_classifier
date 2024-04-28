@@ -3,7 +3,6 @@ import {jwtDecode} from 'jwt-decode';
 import PropTypes from 'prop-types';
 import LogoutButton from './Logout';
 
-
 const styles = {
     banner: {
         display: 'flex',

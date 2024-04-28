@@ -97,7 +97,7 @@ const NewCrawl = () => {
                     model_name: m.model_name,
                     model: m["_id"]
                 }));
-    
+                
                 setModelData(newArray);
             } catch (error) {
                 console.error('Error fetching data:', error);
