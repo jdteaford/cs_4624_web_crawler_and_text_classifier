@@ -31,14 +31,21 @@
     height: 50px;
 }
 
-.tree-container{
+/* .tree-container{
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 25px;
     border: 1px solid #000;
     height: 500px;
-    /* width: 100% */
+} */
+.tree-container{
+    /* display: flex; */
+    /* justify-content: space-between; */
+    /* align-items: center; */
+    /* padding: 25px; */
+    border: 1px solid #000;
+    height: 500px;
 }
 
 
