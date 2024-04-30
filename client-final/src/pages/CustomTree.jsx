@@ -18,11 +18,13 @@ const CustomTree = ({ data }) => {
 
   const renderTooltip = () => {
     if (hoveredNodeInfo) {
+        console.log(hoveredNodeInfo.data);
       const tooltipStyle = {
         position: 'fixed',
-        top: '10px', // Adjust top position as needed
+        top: '100px', // Adjust top position as needed
         left: '10px', // Adjust left position as needed
-        backgroundColor: '#ffffff', // Tooltip background color
+        // backgroundColor: 'rgb(176, 48, 96)', // Tooltip background color
+        width: '400px',
         padding: '10px', // Padding around the tooltip content
         border: '1px solid #000000', // Tooltip border
         zIndex: 9999, // Ensure tooltip is above other elements
@@ -30,9 +32,8 @@ const CustomTree = ({ data }) => {
 
       return (
         <div style={tooltipStyle}>
-          <p>Avg Score: {hoveredNodeInfo.data.Avg_score}</p>
           <p>URL: {hoveredNodeInfo.data.URL}</p>
-          {/* Add other relevant data here */}
+          <p>Avg Score: {hoveredNodeInfo.data.Avg_score}</p>
         </div>
       );
     }
