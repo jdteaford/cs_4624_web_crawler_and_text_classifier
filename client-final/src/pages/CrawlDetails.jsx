@@ -119,15 +119,8 @@ function CrawlDetails() {
                   </button>
                 </div>
                 <div className="tree-container">
-                <b>Crawl ID: </b> When you zoom in and hover on a node, it will display the url string
+                <b>Tree: </b> When you zoom in and hover on a node, it will display the url string
                 and its relevancy score in the top left box of the screen.
-                    {/* {crawlData['URLs'] && (
-                        <Tree 
-                            data={crawlData['URLs']} 
-                            separation={{ siblings: 1, nonSiblings: 2 }} 
-                            orientation="vertical" 
-                            style={{ width: '100%' }} />
-                    )} */}
                     {crawlData && (
                       <CustomTree 
                         data={crawlData['URLs']}
