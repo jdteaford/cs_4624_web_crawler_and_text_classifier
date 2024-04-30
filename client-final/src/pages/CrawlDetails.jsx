@@ -119,6 +119,8 @@ function CrawlDetails() {
                   </button>
                 </div>
                 <div className="tree-container">
+                <b>Crawl ID: </b> When you zoom in and hover on a node, it will display the url string
+                and its relevancy score in the top left box of the screen.
                     {/* {crawlData['URLs'] && (
                         <Tree 
                             data={crawlData['URLs']} 
