@@ -5,6 +5,7 @@ import HomeButton from '../components/HomeButton';
 import '../stylesheets/crawldetails.css';
 import logo from '../trans_web.png';
 import { BarChart } from "@mui/x-charts";
+import CustomTree from './CustomTree';
 
 import { Tree } from 'react-d3-tree';
 
@@ -118,13 +119,17 @@ function CrawlDetails() {
                   </button>
                 </div>
                 <div className="tree-container">
-                    
-                    {crawlData['URLs'] && (
+                    {/* {crawlData['URLs'] && (
                         <Tree 
                             data={crawlData['URLs']} 
                             separation={{ siblings: 1, nonSiblings: 2 }} 
                             orientation="vertical" 
                             style={{ width: '100%' }} />
+                    )} */}
+                    {crawlData && (
+                      <CustomTree 
+                        data={crawlData['URLs']}
+                        style={{ width: '100%' }} />
                     )}
                 </div>
 
